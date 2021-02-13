@@ -52,4 +52,17 @@ class App extends Component {
     }
   }
 }
-export default App;
+
+
+class Form extends React.Component {
+  render () {
+    return (
+      <form ref="form" onSubmit={this.onSubmit} className="form-inline">
+        <input type="text" ref="itemName" className="form-control" placeholder="add wallet address"/>
+        <button type="submit" className="btn btn-default">Submit</button>
+      </form>
+    );
+  }
+}
+
+export default Form;
