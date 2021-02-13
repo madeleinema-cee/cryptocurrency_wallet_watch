@@ -1,24 +1,36 @@
 import React, {Component} from 'react';
 
 
-class App extends Component {
+export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      error: null,
       isLoaded: false,
-      balances: []
+      error: null,
+      address: '1AJbsFZ64EpEfS5UAjAfcUG8pH8Jn3rn1F',
+      balances: [],
+      x: null
     };
+
+    this.apiBase = 'https://blockchain.info/rawaddr/'
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
-  componentDidMount() {
-    fetch("https://blockchain.info/rawaddr/1AJbsFZ64EpEfS5UAjAfcUG8pH8Jn3rn1F")
+  onChange(event) {
+    this.setState({'address': event.target.value})
+  }
+
+  onSubmit(event) {
+    event.preventDefault();
+    fetch(this.apiBase + this.state.address)
       .then(res => res.json())
       .then(
         (result) => {
-          this.setState({
+          this.replaceState({
             isLoaded: true,
-            balances: result.txs
+            balances: result.txs,
+            x: result
           });
         },
         // Note: it's important to handle errors here
@@ -34,35 +46,32 @@ class App extends Component {
   }
 
   render() {
-    const { error, isLoaded, balances } = this.state;
-    if (error) {
-      return <div>Error: {error.message}</div>;
-    } else if (!isLoaded) {
-      return <div>Loading...</div>;
-    } else {
+    const {isLoaded, address, balances} = this.state;
+    if (!isLoaded) {
       return (
-        <ul>
-          {balances.map(balance => (
-            <li>
-              {balance}
-            </li>
-          ))}
-        </ul>
-      );
+
+        <div>
+          <div>
+            <form ref="form" onSubmit={this.onSubmit} className="form-inline">
+              <input type="text" onChange={this.onChange} value={this.state.address} className="form-control"
+                     placeholder="add wallet address"/>
+              <button type="submit" className="btn btn-default">Submit</button>
+            </form>
+          </div>
+        </div>
+      )
     }
-  }
-}
 
-
-class Form extends React.Component {
-  render () {
     return (
-      <form ref="form" onSubmit={this.onSubmit} className="form-inline">
-        <input type="text" ref="itemName" className="form-control" placeholder="add wallet address"/>
-        <button type="submit" className="btn btn-default">Submit</button>
-      </form>
-    );
+      <div>
+        {JSON.stringify(this.state.x)}
+        {this.state.balances}
+      </div>
+    )
   }
+
+
 }
 
-export default Form;
+
+export default App;
