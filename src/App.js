@@ -7,9 +7,8 @@ export class App extends Component {
     this.state = {
       isLoaded: false,
       error: null,
-      address: '1AJbsFZ64EpEfS5UAjAfcUG8pH8Jn3rn1F',
+      address: null,
       balances: [],
-      x: null
     };
 
     this.apiBase = 'https://blockchain.info/rawaddr/'
@@ -22,15 +21,13 @@ export class App extends Component {
   }
 
   onSubmit(event) {
-    event.preventDefault();
-    fetch(this.apiBase + this.state.address)
+    fetch('https://api.allorigins.win/raw?url=' + this.apiBase + this.state.address)
       .then(res => res.json())
       .then(
         (result) => {
-          this.replaceState({
+          this.setState({
             isLoaded: true,
-            balances: result.txs,
-            x: result
+            balances: this.formatBalances(result.txs),
           });
         },
         // Note: it's important to handle errors here
@@ -43,13 +40,27 @@ export class App extends Component {
           });
         }
       )
+    event.preventDefault();
+
+  }
+
+  formatBalances(inputData) {
+    console.log(inputData)
+    let data = {}
+    for (let i = 0; i < inputData.length; i++){
+      data[inputData[i]['hash']] = {
+        'time': inputData[i]['time'],
+        'result': inputData[i]['result'],
+      }
+    }
+    return data
   }
 
   render() {
     const {isLoaded, address, balances} = this.state;
+    console.log(balances)
     if (!isLoaded) {
       return (
-
         <div>
           <div>
             <form ref="form" onSubmit={this.onSubmit} className="form-inline">
@@ -64,8 +75,11 @@ export class App extends Component {
 
     return (
       <div>
-        {JSON.stringify(this.state.x)}
-        {this.state.balances}
+        {
+          Object.keys(this.state.balances).map((key, index)=> (
+              <p>{key} | {balances[key]['time']} | {balances[key]['result']}</p>
+          ))
+        }
       </div>
     )
   }
