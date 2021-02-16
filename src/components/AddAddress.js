@@ -23,6 +23,7 @@ export class AddAddress extends Component{
       //this.state is like self.state
       this.setState({
          address: '',
+          isLoaded: true
       })
    }
 

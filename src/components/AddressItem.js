@@ -5,6 +5,7 @@ export class AddressItem extends Component {
    render() {
       const {address} = this.props.address
       return(
+
              <React.Fragment>
              <tr>
                 <div>test</div>
