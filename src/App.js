@@ -1,90 +1,138 @@
+import './App.css';
 import React, {Component} from 'react';
+import moment from "moment";
+import Addresses from "./components/Addresses";
+import AddAddress from "./components/AddAddress";
 
 
-export class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoaded: false,
-      error: null,
-      address: null,
-      balances: [],
-    };
-
-    this.apiBase = 'https://blockchain.info/rawaddr/'
-    this.onSubmit = this.onSubmit.bind(this);
-    this.onChange = this.onChange.bind(this);
-  }
-
-  onChange(event) {
-    this.setState({'address': event.target.value})
-  }
-
-  onSubmit(event) {
-    fetch('https://api.allorigins.win/raw?url=' + this.apiBase + this.state.address)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.setState({
-            isLoaded: true,
-            balances: this.formatBalances(result.txs),
-          });
-        },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error
-          });
+class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLoaded: false,
+            addresses: [],
+            error: null,
+            balances: [],
+            dates: null,
+            datesWithBalances: null
         }
-      )
-    event.preventDefault();
 
-  }
-
-  formatBalances(inputData) {
-    console.log(inputData)
-    let data = {}
-    for (let i = 0; i < inputData.length; i++){
-      data[inputData[i]['hash']] = {
-        'time': inputData[i]['time'],
-        'result': inputData[i]['result'],
-      }
-    }
-    return data
-  }
-
-  render() {
-    const {isLoaded, address, balances} = this.state;
-    console.log(balances)
-    if (!isLoaded) {
-      return (
-        <div>
-          <div>
-            <form ref="form" onSubmit={this.onSubmit} className="form-inline">
-              <input type="text" onChange={this.onChange} value={this.state.address} className="form-control"
-                     placeholder="add wallet address"/>
-              <button type="submit" className="btn btn-default">Submit</button>
-            </form>
-          </div>
-        </div>
-      )
+        this.apiBase = 'https://blockchain.info/rawaddr/'
     }
 
-    return (
-      <div>
-        {
-          Object.keys(this.state.balances).map((key, index)=> (
-              <p>{key} | {balances[key]['time']} | {balances[key]['result']}</p>
-          ))
+    fetchBitcoinTranscationDataWithAPI(address) {
+        fetch('https://api.allorigins.win/raw?url=' + this.apiBase + address)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    this.setState({
+                        isLoaded: true,
+                        balances: this.formatBalances(result.txs),
+                        dates: this.generateDates(moment(new Date(result.txs[(result.txs).length-1].time * 1000))
+                            .format("YYYY-MM-DD HH:00:00")),
+                        datesWithBalance: this.insertValueToDates(this.formatBalances(result.txs),
+                            this.generateDates(moment(new Date(result.txs[(result.txs).length-1].time * 1000))
+                            .format("YYYY-MM-DD HH:00:00")))
+                    });
+                    console.log(this.state.datesWithBalance)
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                }
+            )
+
+    }
+
+    formatBalances(inputData) {
+        let transactionHistory = []
+        let balanceHistory = []
+        let newDates = []
+        let c =[]
+
+        let data = {}
+        for (let i = 0; i < inputData.length; i++) {
+            let dateString = moment(new Date(inputData[i]['time'] * 1000)).format("YYYY-MM-DD HH:00:00")
+            let convertedCryptoAmount = inputData[i]['result'] / 100000000
+            transactionHistory.push(convertedCryptoAmount)
+            transactionHistory.reverse()
+            newDates.push(dateString)
         }
-      </div>
-    )
-  }
+        newDates.reverse()
+        for (let i = 0; i<transactionHistory.length; i++){
+            c.push(transactionHistory[i])
+            balanceHistory.push((c.reduce((a, b)=> a+b)))
+        }
+        newDates.forEach((newDate, i) =>data[newDate] = balanceHistory[i])
+        return data
+    }
+
+    generateDates(inputData) {
+        let dates = {}
+        let startDate = new Date(inputData);
+        let endDate = new Date();
+        let hoursBetween = (endDate - startDate)/(1000*60*60)
+        for(let i = 0; i <= hoursBetween; i++){
+            const newdate = new Date(new Date(startDate).getTime()+(i*1000*60*60));
+            const formatedDate = moment(newdate).format("YYYY-MM-DD HH:00:00")
+            dates[formatedDate] = null
+            }
+        return dates
+    }
+
+    insertValueToDates(balances, dates){
+
+        let balanceKeys = Object.keys(balances)
+        let dateKeys = Object.keys(dates)
+        // for(let i = 0; i<dateKeys.length; i++) {
+        //     for (let i = 0; i<balanceKeys.length; i++) {
+        //         if (dateKeys[i] === balanceKeys[i]){
+        //             console.log(balanceKeys[i])}
+        //     }
+        // }
+        console.log(balanceKeys)
+    }
 
 
+    addAddress = (address) => {
+        this.fetchBitcoinTranscationDataWithAPI(address)
+
+        // const newAddress = {
+        //    address: address,
+        // }
+        // this.setState({addresses: [...this.state.addresses, newAddress]})
+
+    }
+
+    render() {
+        const {isLoaded, address, balances} = this.state;
+
+        if (!isLoaded) {
+            return (
+                <React.Fragment>
+                    <AddAddress addAddress={this.addAddress}/>
+
+                </React.Fragment>)
+        }
+
+        return (
+            <React.Fragment>
+                <Addresses addresses={this.state.addresses}/>
+                <div>
+                    {address}
+                    {Object.keys(this.state.balances).map((key, index) => (
+                        <p>{key} | {balances[key]}</p>
+                    ))
+                    }
+                </div>
+            </React.Fragment>
+        )
+    }
 }
 
 
