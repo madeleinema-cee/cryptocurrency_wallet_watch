@@ -1,34 +1,32 @@
-import React, {Component} from 'react';
+import './App.css';
+import React, {Component}from 'react';
+import Addresses from "./components/Addresses";
+import AddAddress from "./components/AddAddress";
 
 
-export class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoaded: false,
-      error: null,
-      address: null,
-      balances: [],
-    };
+class App extends Component{
+   constructor(props) {
+      super(props);
+      this.state = {
+         isLoaded: false,
+         addresses:[],
+         error: null,
+         balances: []
+      }
 
-    this.apiBase = 'https://blockchain.info/rawaddr/'
-    this.onSubmit = this.onSubmit.bind(this);
-    this.onChange = this.onChange.bind(this);
-  }
+      this.apiBase = 'https://blockchain.info/rawaddr/'
+   }
 
-  onChange(event) {
-    this.setState({'address': event.target.value})
-  }
-
-  onSubmit(event) {
-    fetch('https://api.allorigins.win/raw?url=' + this.apiBase + this.state.address)
+   fetchBitcoinTranscationDataWithAPI(address){
+      fetch('https://api.allorigins.win/raw?url=' + this.apiBase + address)
       .then(res => res.json())
       .then(
-        (result) => {
-          this.setState({
-            isLoaded: true,
-            balances: this.formatBalances(result.txs),
-          });
+          (result) => {
+             this.setState({
+                isLoaded: true,
+                balances: this.formatBalances(result.txs),
+             });
+             console.log(this.state.balances)
         },
         // Note: it's important to handle errors here
         // instead of a catch() block so that we don't swallow
@@ -40,52 +38,59 @@ export class App extends Component {
           });
         }
       )
-    event.preventDefault();
 
-  }
+   }
 
-  formatBalances(inputData) {
-    console.log(inputData)
-    let data = {}
-    for (let i = 0; i < inputData.length; i++){
-      data[inputData[i]['hash']] = {
-        'time': inputData[i]['time'],
-        'result': inputData[i]['result'],
+   formatBalances(inputData) {
+      let data = {}
+      for (let i = 0; i < inputData.length; i++) {
+         let dateString = new Date(inputData[i]['time'] * 1000).toISOString()
+         let convertedCryptoAmount = inputData[i]['result']/ 100000000
+         data[dateString] =  convertedCryptoAmount
+
       }
-    }
-    return data
-  }
 
-  render() {
-    const {isLoaded, address, balances} = this.state;
-    console.log(balances)
-    if (!isLoaded) {
+      return data
+   }
+
+   addAddress = (address) => {
+      this.fetchBitcoinTranscationDataWithAPI(address)
+
+      // const newAddress = {
+      //    address: address,
+      // }
+      // this.setState({addresses: [...this.state.addresses, newAddress]})
+
+   }
+
+   render() {
+      const {isLoaded, address, balances} = this.state;
+
+      if (!isLoaded){
+         return (
+             <React.Fragment>
+               <AddAddress addAddress={this.addAddress}/>
+
+             </React.Fragment>)
+          }
+
       return (
-        <div>
-          <div>
-            <form ref="form" onSubmit={this.onSubmit} className="form-inline">
-              <input type="text" onChange={this.onChange} value={this.state.address} className="form-control"
-                     placeholder="add wallet address"/>
-              <button type="submit" className="btn btn-default">Submit</button>
-            </form>
-          </div>
-        </div>
+          <React.Fragment>
+             <Addresses addresses= {this.state.addresses}/>
+             <div>
+                {address}
+               {
+                  Object.keys(this.state.balances).map((key, index)=> (
+                 <p>{key} | {balances[key]}</p>
+                  ))
+               }
+            </div>
+          </React.Fragment>
       )
-    }
-
-    return (
-      <div>
-        {
-          Object.keys(this.state.balances).map((key, index)=> (
-              <p>{key} | {balances[key]['time']} | {balances[key]['result']}</p>
-          ))
-        }
-      </div>
-    )
-  }
-
-
+   }
 }
+
+
 
 
 export default App;
