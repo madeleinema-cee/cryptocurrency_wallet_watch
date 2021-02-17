@@ -28,11 +28,9 @@ class App extends Component {
                     this.setState({
                         isLoaded: true,
                         balances: this.formatBalances(result.txs),
-                        dates: this.generateDates(moment(new Date(result.txs[(result.txs).length-1].time * 1000))
-                            .format("YYYY-MM-DD HH:00:00")),
                         datesWithBalance: this.insertValueToDates(this.formatBalances(result.txs),
-                            this.generateDates(moment(new Date(result.txs[(result.txs).length-1].time * 1000))
-                            .format("YYYY-MM-DD HH:00:00")))
+                            this.generateDates(moment(new Date(result.txs[(result.txs).length - 1].time * 1000))
+                                .format("YYYY-MM-DD HH:00:00")))
                     });
                     console.log(this.state.datesWithBalance)
                 },
@@ -53,8 +51,7 @@ class App extends Component {
         let transactionHistory = []
         let balanceHistory = []
         let newDates = []
-        let c =[]
-
+        let c = []
         let data = {}
         for (let i = 0; i < inputData.length; i++) {
             let dateString = moment(new Date(inputData[i]['time'] * 1000)).format("YYYY-MM-DD HH:00:00")
@@ -64,11 +61,11 @@ class App extends Component {
             newDates.push(dateString)
         }
         newDates.reverse()
-        for (let i = 0; i<transactionHistory.length; i++){
+        for (let i = 0; i < transactionHistory.length; i++) {
             c.push(transactionHistory[i])
-            balanceHistory.push((c.reduce((a, b)=> a+b)))
+            balanceHistory.push((c.reduce((a, b) => a + b)))
         }
-        newDates.forEach((newDate, i) =>data[newDate] = balanceHistory[i])
+        newDates.forEach((newDate, i) => data[newDate] = balanceHistory[i])
         return data
     }
 
@@ -76,28 +73,32 @@ class App extends Component {
         let dates = {}
         let startDate = new Date(inputData);
         let endDate = new Date();
-        let hoursBetween = (endDate - startDate)/(1000*60*60)
-        for(let i = 0; i <= hoursBetween; i++){
-            const newdate = new Date(new Date(startDate).getTime()+(i*1000*60*60));
+        let hoursBetween = (endDate - startDate) / (1000 * 60 * 60)
+        for (let i = 0; i <= hoursBetween; i++) {
+            const newdate = new Date(new Date(startDate).getTime() + (i * 1000 * 60 * 60));
             const formatedDate = moment(newdate).format("YYYY-MM-DD HH:00:00")
-            dates[formatedDate] = null
-            }
+            dates[formatedDate] = 0
+        }
         return dates
     }
 
-    insertValueToDates(balances, dates){
-
+    insertValueToDates(balances, dates) {
         let balanceKeys = Object.keys(balances)
         let dateKeys = Object.keys(dates)
-        // for(let i = 0; i<dateKeys.length; i++) {
-        //     for (let i = 0; i<balanceKeys.length; i++) {
-        //         if (dateKeys[i] === balanceKeys[i]){
-        //             console.log(balanceKeys[i])}
-        //     }
-        // }
-        console.log(balanceKeys)
-    }
+        for (const [key, value] of Object.entries(dates)) {
+            if (balanceKeys.includes(key)) {
+                dates[key] = balances[key]
+            } else {
+                if (dates[key] === 0) {
+                    let lastHourTime = moment(new Date(key).getTime()- (1000*60*60)).format("YYYY-MM-DD HH:00:00")
+                    let value = dates[lastHourTime]
+                    dates[key] = value
+                }
+            }
 
+        }
+        return dates
+    }
 
     addAddress = (address) => {
         this.fetchBitcoinTranscationDataWithAPI(address)
@@ -108,9 +109,8 @@ class App extends Component {
         // this.setState({addresses: [...this.state.addresses, newAddress]})
 
     }
-
     render() {
-        const {isLoaded, address, balances} = this.state;
+        const {isLoaded, address, balances, datesWithBalance} = this.state;
 
         if (!isLoaded) {
             return (
@@ -125,8 +125,8 @@ class App extends Component {
                 <Addresses addresses={this.state.addresses}/>
                 <div>
                     {address}
-                    {Object.keys(this.state.balances).map((key, index) => (
-                        <p>{key} | {balances[key]}</p>
+                    {Object.keys(this.state.datesWithBalance).map((key, index) => (
+                        <p key={key}>{key} | {datesWithBalance[key]}</p>
                     ))
                     }
                 </div>
