@@ -1,0 +1,66 @@
+import './App.css';
+import React, {Component} from 'react';
+import moment from "moment";
+import Addresses from "./components/Addresses";
+import AddAddress from "./components/AddAddress";
+
+
+class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            address: [],
+            isLoaded: false,
+            exchangeRate: null,
+        }
+        this.btcUsdApiBase = 'http://127.0.0.1:5000/api/btc?address='
+        this.test_results = {}
+
+    }
+
+    sendAddressToFlaskAPI(address) {
+        fetch(this.btcUsdApiBase + address)
+            .then(response => response.json())
+            .then(
+                (result) => {
+                    this.setState({
+                        isLoaded: true,
+                        exchangeRate: result
+                        })
+                    console.log(this.state.exchangeRate)
+                }
+            )
+    }
+
+    addAddress = (address) => {
+        this.sendAddressToFlaskAPI(address)
+
+    }
+
+    render() {
+        const {isLoaded, exchangeRate} = this.state;
+
+        if (!isLoaded) {
+            return (
+                <React.Fragment>
+                    <AddAddress addAddress={this.addAddress}/>
+
+                </React.Fragment>)
+        }
+
+        return (
+            <React.Fragment>
+                <Addresses addresses={this.state.addresses}/>
+                <div>
+                    test
+
+                </div>
+            </React.Fragment>
+        )
+    }
+
+
+}
+
+
+export default App;
