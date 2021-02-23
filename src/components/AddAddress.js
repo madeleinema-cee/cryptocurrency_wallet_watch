@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { Container, Row, Col, Button} from 'react-bootstrap';
 
 export class AddAddress extends Component{
   constructor(props) {
@@ -29,24 +30,16 @@ export class AddAddress extends Component{
 
    render() {
       return(
+          <Container>
           <form onSubmit={this.onSubmit}>
              <div>
-             <input
-                 type='text'
-                 name='address'
-                 placeholder='Add wallet address'
-                 value = {this.state.address}
-                 onChange={this.onChange}
-             />
+             <input type='text' name='address' placeholder='Add wallet address' value = {this.state.address} onChange={this.onChange}/>
              </div>
              <div>
-             <input
-                 type='submit'
-                 value='submit'
-                 className='btn'
-             />
+                 <Button variant="outline-primary" type='submit'>Submit</Button>
              </div>
           </form>
+          </Container>
       )
    }
 }

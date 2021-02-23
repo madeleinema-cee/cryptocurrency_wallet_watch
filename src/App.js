@@ -1,8 +1,11 @@
 import './App.css';
 import React, {Component} from 'react';
-import moment from "moment";
 import Addresses from "./components/Addresses";
 import AddAddress from "./components/AddAddress";
+import { Container, Row, Col, Button} from 'react-bootstrap'
+import './main.css'
+import { ResponsiveAreaBump } from '@nivo/bump'
+
 
 
 class App extends Component {
@@ -12,25 +15,20 @@ class App extends Component {
             isLoaded: false,
             addresses: [],
             error: null,
-            balances: [],
-            dates: null,
             datesWithBalances: null
         }
 
-        this.apiBase = 'https://blockchain.info/rawaddr/'
+        this.btcUsdApiBase = 'http://127.0.0.1:5000/api/btc?address='
     }
 
     fetchBitcoinTranscationDataWithAPI(address) {
-        fetch('https://api.allorigins.win/raw?url=' + this.apiBase + address)
+        fetch(this.btcUsdApiBase + address)
             .then(res => res.json())
             .then(
                 (result) => {
                     this.setState({
                         isLoaded: true,
-                        balances: this.formatBalances(result.txs),
-                        datesWithBalance: this.insertValueToDates(this.formatBalances(result.txs),
-                            this.generateDates(moment(new Date(result.txs[(result.txs).length - 1].time * 1000))
-                                .format("YYYY-MM-DD HH:00:00")))
+                        datesWithBalance: result,
                     });
                     console.log(this.state.datesWithBalance)
                 },
@@ -48,57 +46,17 @@ class App extends Component {
     }
 
     formatBalances(inputData) {
-        let transactionHistory = []
-        let balanceHistory = []
-        let newDates = []
-        let c = []
         let data = {}
         for (let i = 0; i < inputData.length; i++) {
-            let dateString = moment(new Date(inputData[i]['time'] * 1000)).format("YYYY-MM-DD HH:00:00")
-            let convertedCryptoAmount = inputData[i]['result'] / 100000000
-            transactionHistory.push(convertedCryptoAmount)
-            transactionHistory.reverse()
-            newDates.push(dateString)
+            let dateString = inputData[i]['time']
+            let convertedCryptoAmount = inputData[i]['result']
+            data[dateString] = convertedCryptoAmount
+
         }
-        newDates.reverse()
-        for (let i = 0; i < transactionHistory.length; i++) {
-            c.push(transactionHistory[i])
-            balanceHistory.push((c.reduce((a, b) => a + b)))
-        }
-        newDates.forEach((newDate, i) => data[newDate] = balanceHistory[i])
         return data
     }
 
-    generateDates(inputData) {
-        let dates = {}
-        let startDate = new Date(inputData);
-        let endDate = new Date();
-        let hoursBetween = (endDate - startDate) / (1000 * 60 * 60)
-        for (let i = 0; i <= hoursBetween; i++) {
-            const newdate = new Date(new Date(startDate).getTime() + (i * 1000 * 60 * 60));
-            const formatedDate = moment(newdate).format("YYYY-MM-DD HH:00:00")
-            dates[formatedDate] = 0
-        }
-        return dates
-    }
 
-    insertValueToDates(balances, dates) {
-        let balanceKeys = Object.keys(balances)
-        let dateKeys = Object.keys(dates)
-        for (const [key, value] of Object.entries(dates)) {
-            if (balanceKeys.includes(key)) {
-                dates[key] = balances[key]
-            } else {
-                if (dates[key] === 0) {
-                    let lastHourTime = moment(new Date(key).getTime()- (1000*60*60)).format("YYYY-MM-DD HH:00:00")
-                    let value = dates[lastHourTime]
-                    dates[key] = value
-                }
-            }
-
-        }
-        return dates
-    }
 
     addAddress = (address) => {
         this.fetchBitcoinTranscationDataWithAPI(address)
@@ -109,8 +67,9 @@ class App extends Component {
         // this.setState({addresses: [...this.state.addresses, newAddress]})
 
     }
+
     render() {
-        const {isLoaded, address, balances, datesWithBalance} = this.state;
+        const {isLoaded, address, datesWithBalance} = this.state;
 
         if (!isLoaded) {
             return (
@@ -122,15 +81,26 @@ class App extends Component {
 
         return (
             <React.Fragment>
+                <div className='special'>
+                <Container>
                 <Addresses addresses={this.state.addresses}/>
                 <div>
-                    {address}
+                    <div>test</div>
                     {Object.keys(this.state.datesWithBalance).map((key, index) => (
                         <p key={key}>{key} | {datesWithBalance[key]}</p>
                     ))
                     }
                 </div>
+                </Container>
+                <Container fluid="md">
+  <Row>
+    <Col>1 of 1</Col>
+  </Row>
+</Container>
+                </div>
+
             </React.Fragment>
+
         )
     }
 }
