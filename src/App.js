@@ -2,10 +2,26 @@ import './App.css';
 import React, {Component} from 'react';
 import Addresses from "./components/Addresses";
 import AddAddress from "./components/AddAddress";
-import { Container, Row, Col, Button} from 'react-bootstrap'
-import './main.css'
-import { ResponsiveAreaBump } from '@nivo/bump'
+import {Container, Row, Col, Button} from 'react-bootstrap';
+import './main.css';
+import {
+    VictoryChart,
+    VictoryZoomContainer,
+    VictoryLine,
+    VictoryBrushContainer,
+    VictoryAxis,
+    VictoryTheme,
+    VictoryVoronoiContainer,
+    VictoryTooltip,
+    createContainer
+} from 'victory';
+import {XYPlot, XAxis, YAxis, HorizontalGridLines, LineSeries} from './index';
 
+import {ResponsiveLine} from '@nivo/line'
+
+
+const data = [{'x': new Date(2021, 1, 4, 14, 0, 0), 'y': 2695.1389354868006},
+    {'x': new Date(2021, 1, 5, 14, 0, 0), 'y': 2395.1389354868006}]
 
 
 class App extends Component {
@@ -15,7 +31,7 @@ class App extends Component {
             isLoaded: false,
             addresses: [],
             error: null,
-            datesWithBalances: null
+            datesWithBalances: [],
         }
 
         this.btcUsdApiBase = 'http://127.0.0.1:5000/api/btc?address='
@@ -28,7 +44,7 @@ class App extends Component {
                 (result) => {
                     this.setState({
                         isLoaded: true,
-                        datesWithBalance: result,
+                        datesWithBalance: this.formatData(result)
                     });
                     console.log(this.state.datesWithBalance)
                 },
@@ -45,31 +61,31 @@ class App extends Component {
 
     }
 
-    formatBalances(inputData) {
-        let data = {}
-        for (let i = 0; i < inputData.length; i++) {
-            let dateString = inputData[i]['time']
-            let convertedCryptoAmount = inputData[i]['result']
-            data[dateString] = convertedCryptoAmount
-
-        }
-        return data
+    handleZoom(domain) {
+        this.setState({selectedDomain: domain})
     }
 
+    handleBrush(domain) {
+        this.setState({zoomDomain: domain});
+    }
+
+
+    formatData(inputData) {
+        for (let i = 0; i < inputData.length; i++) {
+            inputData[i]['x'] = new Date(inputData[i]['x'])
+        }
+
+        return inputData
+    }
 
 
     addAddress = (address) => {
         this.fetchBitcoinTranscationDataWithAPI(address)
-
-        // const newAddress = {
-        //    address: address,
-        // }
-        // this.setState({addresses: [...this.state.addresses, newAddress]})
-
     }
 
     render() {
         const {isLoaded, address, datesWithBalance} = this.state;
+        const VictoryZoomVoronoiContainer = createContainer('zoom', 'voronoi')
 
         if (!isLoaded) {
             return (
@@ -81,24 +97,45 @@ class App extends Component {
 
         return (
             <React.Fragment>
-                <div className='special'>
-                <Container>
-                <Addresses addresses={this.state.addresses}/>
-                <div>
-                    <div>test</div>
-                    {Object.keys(this.state.datesWithBalance).map((key, index) => (
-                        <p key={key}>{key} | {datesWithBalance[key]}</p>
-                    ))
+                <div className='height'>
+                    <VictoryChart width={1000} height={500} scale={{x: 'time'}} containerComponent={
+                        <VictoryZoomVoronoiContainer responsive={false}
+                                                     zoomDimension='x'
+                                                     zoomDomain={this.state.zoomDomain}
+                                                     onZoomDomainChange={this.handleZoom.bind(this)}
+                                                     labels={({datum}) => `y: ${datum.y}, x:${datum.x}`}
+                                                     labelComponent={<VictoryTooltip/>}
+                        />
                     }
-                </div>
-                </Container>
-                <Container fluid="md">
-  <Row>
-    <Col>1 of 1</Col>
-  </Row>
-</Container>
-                </div>
+                    >
+                        <VictoryLine style={{data: {stroke: 'tomato'}}}
+                                     data={this.state.datesWithBalance}
+                        />
+                    </VictoryChart>
 
+                    <VictoryChart width={1000} height={300} scale={{x: 'time'}} containerComponent={
+                        <VictoryBrushContainer responsive={false}
+                                               brushDimension='x'
+                                               brushDomain={this.state.selectedDomain}
+                                               onBrushDomainChange={this.handleBrush.bind(this)}
+                        />
+                    }
+                    >
+                        <VictoryAxis tickValues={[new Date('2020-12-12 23:00:00'), new Date('2021-02-25 16:00:00')]}
+                                     tickFormat={(x) => new Date(x).getMonth()}
+
+                        />
+
+                        <VictoryLine
+                            style={{
+                                data: {stroke: "#c43a31"},
+                                parent: {border: "1px solid #ccc"}
+                            }}
+                            data={this.state.datesWithBalance}
+
+                        />
+                    </VictoryChart>
+                </div>
             </React.Fragment>
 
         )

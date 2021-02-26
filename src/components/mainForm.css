@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+
+
+.background {
+    background-color: #2b2d42;
+    margin: 0;
+    height: 100vh;
+}
+
+.title {
+    padding-top: 10%;
+    font-family: Ubuntu, serif;
+    color: #f1faee;
+}
+
+.center {
+    padding: 5%;
+    text-align: center;
+    margin: auto;
+    width: 90%;
+}
+
+.input-form {
+    margin-right: 20px;
+}
+
+.submit {
+    margin-left: 20px;
+}
