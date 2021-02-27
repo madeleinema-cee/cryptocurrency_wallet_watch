@@ -1,9 +1,34 @@
 
 
 .height {
+    background-color: #392f41;
     min-height: 100vh;
     margin: 0;
+    padding: 5%;
+    font-family: Ubuntu, serif;
 
 }
 
+.main-chart {
+    background-color: #3d3b4f;
+    padding: 3%;
+
+}
+
+.chart-title {
+    font-family: Ubuntu, serif;
+    color: #f1faee;
+    font-size: xx-large;
+}
+
+.balance {
+    font-family: Ubuntu, serif;
+    color: #f1faee;
+    margin-bottom: 20px;
+}
+
+.small-title {
+    color: #f2ecde;
+
+}
 
