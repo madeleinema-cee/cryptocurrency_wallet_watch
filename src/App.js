@@ -12,6 +12,7 @@ import {
     VictoryLine,
     VictoryTooltip
 } from 'victory';
+import moment from "moment";
 
 
 class App extends Component {
@@ -22,7 +23,8 @@ class App extends Component {
             addresses: [],
             error: null,
             datesWithBalances: [],
-            currentBalance: null
+            currentBalance: null,
+            monthRange: []
         }
 
         this.btcUsdApiBase = 'http://127.0.0.1:5000/api/btc?address='
@@ -37,9 +39,10 @@ class App extends Component {
                         isLoaded: true,
                         datesWithBalance: this.formatData(result),
                         address: address,
-                        currentBalance: this.getCurrentBalance(result)
+                        currentBalance: result[result.length - 1]['y'],
+                        monthRange: this.getMonthRange(result)
                     });
-                    console.log(this.state.datesWithBalance)
+                    console.log(this.state.monthRange)
                 },
                 // Note: it's important to handle errors here
                 // instead of a catch() block so that we don't swallow
@@ -62,8 +65,17 @@ class App extends Component {
         return inputData
     }
 
-    getCurrentBalance(inputData) {
-        return inputData[inputData.length - 1]['y']
+    getMonthRange(inputData) {
+        let startDate = moment(inputData[0]['x'])
+        let endDate = moment(inputData[inputData.length -1]['x'])
+        let result = []
+        let month = []
+        while (startDate.isBefore(endDate)) {
+            result.push(new Date(startDate.format()));
+                startDate.add(1, "month")
+        }
+        console.log(result)
+        return result
     }
 
     addAddress = (address) => {
@@ -79,7 +91,7 @@ class App extends Component {
     }
 
     render() {
-        const {isLoaded, address, datesWithBalance, currentBalance} = this.state;
+        const {isLoaded, address, datesWithBalance, currentBalance, monthRange} = this.state;
         const VictoryZoomVoronoiContainer = createContainer('zoom', 'voronoi')
 
         if (!isLoaded) {
@@ -98,6 +110,7 @@ class App extends Component {
                             <div className='main-chart'>
                                 <div className='chart-title'>Bitcoin Wallet Balance (USD)</div>
                                 <div className='small-title'>Address: {this.state.address}</div>
+                                <div>{this.state.monthRange}</div>
                                 <VictoryChart width={1000} height={500} scale={{x: 'time'}} containerComponent={
                                     <VictoryZoomVoronoiContainer zoomDimension='x'
                                                                  zoomDomain={this.state.zoomDomain}
@@ -158,8 +171,9 @@ ${(datum.x).toLocaleString()}`}
                                 }
                                 >
                                     <VictoryAxis
-                                        tickValues={[new Date('2020-12-12 23:00:00'), new Date('2021-02-25 16:00:00')]}
-                                        tickFormat={(x) => new Date(x).getMonth()} style={{
+                                        tickValues={this.state.monthRange}
+                                        tickFormat={(x) => new Date(x).getDate()}
+                                        style={{
                                         axis: {
                                             stroke: '#d1d9e0'
                                         },
@@ -209,6 +223,8 @@ ${(datum.x).toLocaleString()}`}
 
         )
     }
+
+
 }
 
 
