@@ -1,23 +1,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Istok+Web&display=swap');
 
 .background {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: #392f41;
     margin: 0;
     height: 100vh;
 }
 
+.image {
+    display: inline-block;
+    width: 90px;
+    height: 90px;
+    margin-right: 10px;
+
+}
+
 .title {
-    padding-top: 10%;
-    font-family: Ubuntu, serif;
-    color: #f1faee;
+    font-family: 'Istok Web', serif;
+    color: #e62222;
+    font-weight: 700;
+    display: inline-block;
 }
 
 .center {
-    padding: 5%;
     text-align: center;
+    margin: 0 auto;
+    align-self: center;
+}
+
+.test {
+    padding: 5%;
     margin: auto;
     width: 90%;
+    text-align: center;
 }
 
 .input-form {
@@ -25,5 +43,6 @@
 }
 
 .submit {
-    margin-left: 20px;
+    margin-left: 10px;
 }
+
