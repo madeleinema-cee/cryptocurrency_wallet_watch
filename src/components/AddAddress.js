@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Container, Row, Col, Button, Form} from 'react-bootstrap';
-import './mainForm.css'
+import './mainForm.css';
+import logo from './LogoMakr-9QWe9O.png'
 
 export class AddAddress extends Component {
     constructor(props) {
@@ -8,7 +9,7 @@ export class AddAddress extends Component {
         this.state = {
             isLoaded: false,
             error: null,
-            address: null,
+            address: '',
         };
 
         this.onSubmit = this.onSubmit.bind(this);
@@ -32,27 +33,21 @@ export class AddAddress extends Component {
 
     render() {
         return (
-            <div className='background'>
-            <Container>
-                <div className='center'>
-                    <h1 className='title'>Cryptocurrency Wallet Watch</h1>
-                    <br />
-                    <br />
-                    <Form onSubmit={this.onSubmit}>
-                        <Form.Row>
-                            <Col xs={10}>
-                            <Form.Control className='form-inline' type='text' name='address' placeholder='Add blockchain.com wallet address'
-                                   value={this.state.address} onChange={this.onChange}/>
-                            </Col>
-                            <Col xs={2}>
+            <Form onSubmit={this.onSubmit}>
+                <div className='test'>
+                    <Form.Row>
+                        <Col lg={10}>
+                    <Form.Control type='text' name='address' placeholder='Add blockchain.com wallet address'
+                           value={this.state.address} onChange={this.onChange}/>
 
-                            <Button variant="danger" type='submit'>Submit</Button>
-                            </Col>
-                        </Form.Row>
-                    </Form>
-                    </div>
-            </Container>
-            </div>
+                        </Col>
+                        <Col lg={2}>
+                        <Button variant='info' type='submit'>Submit</Button>
+                        </Col>
+                    </Form.Row>
+                </div>
+
+            </Form>
         )
     }
 }

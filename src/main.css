@@ -4,31 +4,119 @@
     background-color: #392f41;
     min-height: 100vh;
     margin: 0;
-    padding: 5%;
-    font-family: Ubuntu, serif;
+    padding: 2% 10%;
+    font-family: 'Istok Web', serif;
 
+}
+
+.image2 {
+    width: 45px;
+    height: 45px;
+    margin-right: 10px;
+    display: inline-block;
 }
 
 .main-chart {
     background-color: #3d3b4f;
     padding: 3%;
-
+    overflow: visible;
 }
 
+.chart {
+    margin-top: -5%;
+    margin-bottom: -5%;
+}
+
+.tooltip-color {
+    background-color: #282c34;
+}
+
+
 .chart-title {
-    font-family: Ubuntu, serif;
-    color: #f1faee;
-    font-size: xx-large;
+    font-family: 'Istok Web', serif;
+    color: #e62222;
+    font-weight: 700;
+    font-size: x-large;
+    display: inline-block;
 }
 
 .balance {
-    font-family: Ubuntu, serif;
+    font-family: 'Istok Web', serif;
     color: #f1faee;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    font-size: smaller;
+    display: inline-block;
+}
+
+.data {
+    color: #F7931A;
+    font-weight: 700;
+    font-size: x-large;
 }
 
 .small-title {
-    color: #f2ecde;
+    color: white;
+    display: inline-block;
+    text-align: left;
+    float: left;
+    font-size: smaller;
+}
+
+.time {
+    color: white;
+    font-size: small;
+    display: inline-block;
+    margin-right: 10px;
+    padding: 5px;
 
 }
 
+.form {
+    display: inline-block;
+    float: right;
+    text-align: right;
+}
+
+.small-tag {
+    font-size: xx-small;
+    background-color: #f2ecde;
+    display: inline-block;
+    margin-left: 10px;
+    margin-top: -10px;
+    margin-bottom: -10px;
+    border-radius: 10%;
+    padding-left: 2px;
+    padding-right: 2px;
+    padding-bottom: -10px;
+    font-weight: bold;
+}
+
+.currentBalance {
+     color: #e62222;
+    font-weight: 700;
+    font-size: x-large;
+}
+
+.time {
+    font-size: small;
+    color: white;
+    display: inline-block;
+    text-align: right;
+}
+
+.history {
+    display: inline-block;
+    background-color: rgba(246, 219, 69, 0.3);
+    color: #F7931A;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: smaller;
+    text-align: right;
+
+}
+
+.toggle {
+    color: #17A2B8;
+    text-align: left;
+    font-size: smaller;
+}
