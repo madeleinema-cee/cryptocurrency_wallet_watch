@@ -1,4 +1,6 @@
-
+:root {
+    --main-orange: #49D9E9;
+}
 
 .height {
     background-color: #392f41;
@@ -14,12 +16,16 @@
     height: 45px;
     margin-right: 10px;
     display: inline-block;
+    margin-bottom: 5px;
+
 }
 
 .main-chart {
     background-color: #3d3b4f;
     padding: 3%;
-    overflow: visible;
+    -webkit-box-shadow: 0 0 15px 10px #4a4e69 inset;
+    box-shadow: 0 0 15px 10px #4a4e69 inset;
+    border-radius: 12px;
 }
 
 .chart {
@@ -34,10 +40,19 @@
 
 .chart-title {
     font-family: 'Istok Web', serif;
-    color: #e62222;
+    color: #D34C8E;
     font-weight: 700;
     font-size: x-large;
     display: inline-block;
+}
+
+.loading-title {
+    font-family: 'Istok Web', serif;
+    color: #D34C8E;
+    font-weight: 700;
+    font-size: x-large;
+    text-align: center;
+    padding-top: 40%;
 }
 
 .balance {
@@ -49,7 +64,7 @@
 }
 
 .data {
-    color: #F7931A;
+    color: var(--main-orange);
     font-weight: 700;
     font-size: x-large;
 }
@@ -92,7 +107,7 @@
 }
 
 .currentBalance {
-     color: #e62222;
+    color: #CB4A8F;
     font-weight: 700;
     font-size: x-large;
 }
@@ -106,12 +121,28 @@
 
 .history {
     display: inline-block;
-    background-color: rgba(246, 219, 69, 0.3);
-    color: #F7931A;
-    padding: 5px;
+    background-color: rgba(25,220,213,0.3);
+    color: #18DCD6;
+    padding: 5px 5px 5px 10px;
     border-radius: 5px;
     font-size: smaller;
-    text-align: right;
+    text-align: left;
+    min-width: 120px;
+    font-weight: bold;
+    letter-spacing: .1rem;
+}
+
+.negative {
+    display: inline-block;
+    background-color: rgba(211, 76, 142, 0.3);
+    color: #D34C8E;
+    padding: 5px 5px 5px 10px;
+    border-radius: 5px;
+    font-size: smaller;
+    text-align: left;
+    min-width: 120px;
+    font-weight: bolder;
+    letter-spacing: .1rem;
 
 }
 

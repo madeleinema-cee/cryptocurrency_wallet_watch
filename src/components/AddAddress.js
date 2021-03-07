@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Container, Row, Col, Button, Form} from 'react-bootstrap';
 import './mainForm.css';
-import logo from './LogoMakr-9QWe9O.png'
+import logo from './Logo.png'
 
 export class AddAddress extends Component {
     constructor(props) {
