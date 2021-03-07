@@ -1,67 +1,81 @@
 import './App.css';
 import React, {Component} from 'react';
 import AddAddress from "./components/AddAddress";
-import {Button, Col, Container, Form, Row, Accordion, Card, NavLink} from 'react-bootstrap';
+import { Col, Container, Row, Accordion, NavLink} from 'react-bootstrap';
 import './main.css';
 import {
     Chart,
     createContainer,
     ChartArea,
     ChartAxis,
-    ChartLine, ChartTooltip
+    ChartLine,
 } from '@patternfly/react-charts';
 
 import {VictoryBrushContainer, VictoryTooltip} from "victory";
 import moment from "moment";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {Search} from 'react-bootstrap-icons';
+import {MeteorRainLoading} from 'react-loadingg'
 
 
-import logo from './components/LogoMakr-9QWe9O.png'
+import logo from './components/Logo.png'
 
 
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isLoaded: false,
+            isLoaded: 'form',
             addresses: [],
             error: null,
             datesWithBalances: [],
             currentBalance: null,
-            monthRange: [],
             currencyExchangeRate: null,
             topFiveTransactionHistory: null,
             profitMargin: null,
             totalInvested: null,
             btcBalance: null,
-            newAddress: '',
+            profit: null,
+            hideDiv: false,
         }
 
         this.btcUsdApiBase = 'http://127.0.0.1:5000/api/btc?address=';
+        this.handleClick = this.handleClick.bind(this)
+    }
+
+    handleClick(){
+       this.setState({
+          hideDiv: true
+
+        })
+      }
+
+    refreshPage() {
+        window.location.reload(false)
 
     }
 
-
     fetchBitcoinTranscationDataWithAPI(address) {
+        this.setState({
+            isLoaded: 'spinner'
+        })
         fetch(this.btcUsdApiBase + address)
             .then(res => res.json())
             .then(
                 (result) => {
                     this.setState({
-                        isLoaded: true,
+                        isLoaded: 'result',
                         datesWithBalance: this.formatData(result.balance),
                         address: address,
-                        currentBalance: result.balance[result.balance.length - 1]['y'],
-                        monthRange: this.getMonthRange(result.balance),
+                        currentBalance: result.btcbalance * result.btctousd,
                         currencyExchangeRate: result.btctousd,
                         topFiveTransactionHistory: this.getTopFiveTransactionHistory(result.transactionhistory).topFive,
                         restTransactionHistory: this.getTopFiveTransactionHistory(result.transactionhistory).rest,
                         totalInvested: result.totalinvested.toFixed(2),
-                        btcBalance: (result.btcbalance).toFixed(8)
-
+                        btcBalance: (result.btcbalance).toFixed(8),
+                        profit: result.totalprofit,
+                        profitMargin: result.profitmargin
                     });
                 },
+
                 // Note: it's important to handle errors here
                 // instead of a catch() block so that we don't swallow
                 // exceptions from actual bugs in components.
@@ -81,17 +95,6 @@ class App extends Component {
             inputData[i]['y'] = Math.round(inputData[i]['y'])
         }
         return inputData
-    }
-
-    getMonthRange(inputData) {
-        let startDate = moment(inputData[0]['x'])
-        let endDate = moment(inputData[inputData.length - 1]['x'])
-        let result = []
-        while (startDate.isBefore(endDate)) {
-            result.push(new Date(startDate.format()).getTime());
-            startDate.add(1, "month")
-        }
-        return result
     }
 
     addAddress = (address) => {
@@ -122,9 +125,6 @@ class App extends Component {
         transactionHistory['topFive'] = topFiveTransactionHistory
         transactionHistory['rest'] = restOfTransactionHistory
 
-
-        // console.log(topFiveTransactionHistory)
-        console.log(restOfTransactionHistory)
         return transactionHistory
     }
 
@@ -132,12 +132,10 @@ class App extends Component {
     render() {
         const {
             isLoaded, address, datesWithBalance, currentBalance, monthRange, currencyExchangeRate,
-            topFiveTransactionHistory, totalInvested, btcBalance, restTransactionHistory
+            topFiveTransactionHistory, totalInvested, btcBalance, restTransactionHistory, loading, profit, profitMargin, hideDiv
         } = this.state;
         const ZoomVoronoiCursorContainer = createContainer('zoom', 'voronoi');
-        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-        if (!isLoaded) {
+        if (this.state.isLoaded === 'form') {
             return (
                 <React.Fragment>
                     <div className='background'>
@@ -145,7 +143,7 @@ class App extends Component {
                             <div className='center'>
                                 <div>
                                     <img className='image' src={logo} alt='logo'/>
-                                    <h1 className='title'>Cryptocurrency Wallet Watch</h1>
+                                    <h1 className='title'>walletwatch.xyz</h1>
                                     <AddAddress addAddress={this.addAddress}/>
                                 </div>
                             </div>
@@ -155,228 +153,17 @@ class App extends Component {
                 </React.Fragment>
             )
         }
-        if (restTransactionHistory) {
+        if (this.state.isLoaded === 'spinner') {
             return (
-                <React.Fragment>
-                    <div className='height'>
-                        <Container>
-                            <div className='center'>
-                                <img className='image2' src={logo} alt='logo'/>
-                                <div className='chart-title'>walletwatch.xyz</div>
-                            </div>
-                            <br/>
-                            <div className='addressSection'>
-                                <div className='small-title'>Address: {this.state.address}</div>
+                 <div className='height'>
 
-                                <div style={{
-                                    position: 'absolute',
-                                    right: '13%',
-                                    top: '8%',
-                                    height: '50%',
-                                    display: 'inline-block'
-                                }}>
-                                    <AddAddress addAddress={this.addAddress}/>
-                                </div>
-                                <br/>
-                            </div>
-
-
-                            <div className='main-chart'>
-                                <Row>
-                                    <Col>
-                                        <div>
-                                            <p className='balance'>CURRENT BALANCE</p><p className='small-tag'>USD</p>
-                                            <p className='currentBalance'> {this.state.currentBalance}</p>
-                                        </div>
-                                        <div>
-                                            <p className='balance'>BTC BALANCE</p><p className='small-tag'>BTC</p>
-                                            <p className='data'>{this.state.btcBalance}</p>
-                                        </div>
-                                    </Col>
-                                    <Col style={{borderLeft: '2px solid grey', borderRight: '2px solid grey'}}>
-                                        <div>
-                                            <p className='balance'>TOTAL INVESTED</p><p className='small-tag'>USD</p>
-                                            <p className='data'>{this.state.totalInvested}</p>
-                                        </div>
-                                        <div>
-                                            <div className='balance'>PROFIT MARGIN</div>
-                                            <p className='data'>{((this.state.currentBalance - this.state.totalInvested) / this.state.currentBalance * 100)
-                                                .toFixed(2)} %</p>
-                                        </div>
-                                    </Col>
-                                    <Col>
-                                        <div>
-                                            <p className='balance'>PROFIT</p><p className='small-tag'>USD</p>
-                                            <p className='data'>{(this.state.currentBalance - this.state.totalInvested).toFixed(2)}</p>
-                                        </div>
-                                        <div>
-                                            <p className='balance'>BTC PRICE</p><p className='small-tag'>USD</p>
-                                            <p className='data'>{this.state.currencyExchangeRate}</p>
-                                        </div>
-                                    </Col>
-
-                                </Row>
-                            </div>
-                            <br/>
-
-                            <div className='main-chart'>
-                                <div className='chart'>
-                                    <Chart width={950} height={350} scale={{x: 'time'}}
-                                           containerComponent={
-                                               <ZoomVoronoiCursorContainer zoomDimension='x'
-                                                                           zoomDomain={this.state.zoomDomain}
-                                                                           onZoomDomainChange={this.handleZoom.bind(this)}
-                                                                           mouseFollowTooltips
-                                                                           voronoiDimension="x"
-                                                                           labels={({datum}) => `$${datum.y}
-                                                                 
-${moment(datum.x).format('YYYY-M-DD H:mm')}`}
-                                                                           labelComponent={
-                                                                               <VictoryTooltip
-                                                                                   cornerRadius={3}
-                                                                                   flyoutWidth={250}
-                                                                                   flyoutStyle={{
-                                                                                       fill: '#392f41',
-                                                                                       opacity: 0.8
-                                                                                   }}
-                                                                                   style={{
-                                                                                       fontSize: '20px',
-                                                                                       fontFamily: 'Istok Web',
-                                                                                       fill: 'white',
-                                                                                       textAlign: 'left'
-                                                                                   }}
-                                                                               />
-                                                                           }
-                                               />
-                                           }
-                                    >
-                                        <ChartAxis crossAxis
-                                                   style={{
-                                                       axis: {
-                                                           stroke: '#d1d9e0'
-                                                       },
-                                                       tickLabels: {
-                                                           fill: '#d1d9e0',
-                                                           fontFamily: 'Istok Web',
-                                                       },
-                                                       grid: {
-                                                           stroke: ({tick}) => tick > 1 ? "#adb5bd" : "#adb5bd",
-                                                           opacity: 0.1
-                                                       }
-
-                                                   }}
-                                                   padding={{bottom: 20}}
-                                        />
-                                        <ChartAxis dependentAxis crossAxis
-                                                   style={{
-                                                       axis: {
-                                                           stroke: '#d1d9e0',
-
-                                                       },
-                                                       tickLabels: {
-                                                           fill: '#d1d9e0',
-                                                           fontFamily: 'Istok Web'
-                                                       },
-                                                       grid: {
-                                                           stroke: ({tick}) => tick > 5000 ? "#adb5bd" : "#adb5bd",
-                                                           opacity: 0.1
-                                                       }
-
-                                                   }}/>
-                                        <ChartArea
-                                            animate={{
-                                                duration: 2000,
-                                                onLoad: {duration: 1000}
-                                            }}
-                                            style={{data: {fill: '#F6D245', fillOpacity: 0.1, stroke: '#EC862F'}}}
-                                            data={this.state.datesWithBalance}
-                                        />
-                                    </Chart>
-                                </div>
-
-                                <Chart width={950} height={150} scale={{x: 'time'}} containerComponent={
-                                    <VictoryBrushContainer brushDimension='x'
-                                                           brushDomain={this.state.selectedDomain}
-                                                           onBrushDomainChange={this.handleBrush.bind(this)}
-                                                           brushStyle={{fill: '#F6D245', opacity: 0.4}}
-                                    />
-                                }
-                                >
-                                    <ChartAxis
-                                        tickValues={this.state.monthRange}
-                                        tickFormat={(x) => monthNames[new Date(x).getMonth()]}
-                                        style={{
-                                            axis: {
-                                                stroke: '#d1d9e0'
-                                            },
-                                            tickLabels: {
-                                                fill: '#d1d9e0',
-                                                fontFamily: 'Istok Web'
-                                            }
-                                        }}
-
-                                    />
-
-
-                                    <ChartLine
-                                        animate={{
-                                            duration: 2000,
-                                            onLoad: {duration: 1000}
-                                        }}
-                                        style={{
-                                            data: {stroke: "#EC862F"},
-                                            parent: {border: "1px solid #41b6c4"}
-                                        }}
-                                        data={this.state.datesWithBalance}
-
-                                    />
-                                </Chart>
-                            </div>
-                            <br/>
-                            <div className='main-chart'>
-                                <div className='balance'>TRANSACTION HISTORY</div>
-                                {Object.keys(this.state.topFiveTransactionHistory).map((key, index) => (
-                                    <Row>
-                                        <Col xs={5}>
-                                            <p className='time'>{moment(key).format('YYYY-M-DD H:mm')}</p>
-                                        </Col>
-                                        <Col xs={3}>
-                                            <p className='history'>{(topFiveTransactionHistory[key]).toFixed(8)}</p>
-                                        </Col>
-                                    </Row>
-                                ))}
-
-                                <Accordion>
-
-                                    <Accordion.Toggle as={NavLink} eventKey="0">
-                                        <div className='toggle'>
-                                        See More
-                                        </div>
-                                    </Accordion.Toggle>
-
-
-                                    <Accordion.Collapse eventKey="0">
-                                        <div>{Object.keys(this.state.restTransactionHistory).map((key, index) => (
-                                            <Row>
-                                                <Col xs={5}>
-                                                    <p className='time'>{moment(key).format('YYYY-M-DD H:mm')}</p>
-                                                </Col>
-                                                <Col xs={3}>
-                                                    <p className='history'>{(restTransactionHistory[key]).toFixed(8)}</p>
-                                                </Col>
-                                            </Row>
-                                        ))}</div>
-                                    </Accordion.Collapse>
-
-
-                                </Accordion>
-
-                            </div>
-                        </Container>
-
+                    <div className='loading-title'>Loading might take some time...</div>
+                    <br/>
+                    <div>
+                    <MeteorRainLoading size={'large'} color={'#18DCD6'}/>
                     </div>
-                </React.Fragment>
-            )
+                 </div>
+                )
 
         }
 
@@ -384,7 +171,7 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
             <React.Fragment>
                 <div className='height'>
                     <Container>
-                        <div className='center'>
+                        <div className='center' onClick={this.refreshPage}>
                             <img className='image2' src={logo} alt='logo'/>
                             <div className='chart-title'>walletwatch.xyz</div>
                         </div>
@@ -410,7 +197,7 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                                 <Col>
                                     <div>
                                         <p className='balance'>CURRENT BALANCE</p><p className='small-tag'>USD</p>
-                                        <p className='currentBalance'> {this.state.currentBalance}</p>
+                                        <p className='currentBalance'> ${this.state.currentBalance.toFixed(2)}</p>
                                     </div>
                                     <div>
                                         <p className='balance'>BTC BALANCE</p><p className='small-tag'>BTC</p>
@@ -419,23 +206,22 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                                 </Col>
                                 <Col style={{borderLeft: '2px solid grey', borderRight: '2px solid grey'}}>
                                     <div>
-                                        <p className='balance'>TOTAL INVESTED</p><p className='small-tag'>USD</p>
-                                        <p className='data'>{this.state.totalInvested}</p>
+                                        <div className='balance'>PROFIT MARGIN</div>
+                                        <p className='data'>{this.state.profitMargin.toFixed(3)} %</p>
                                     </div>
                                     <div>
-                                        <div className='balance'>PROFIT MARGIN</div>
-                                        <p className='data'>{((this.state.currentBalance - this.state.totalInvested) / this.state.currentBalance * 100)
-                                            .toFixed(2)} %</p>
+                                        <p className='balance'>TOTAL INVESTED</p><p className='small-tag'>USD</p>
+                                        <p className='data'>{this.state.totalInvested}</p>
                                     </div>
                                 </Col>
                                 <Col>
                                     <div>
                                         <p className='balance'>PROFIT</p><p className='small-tag'>USD</p>
-                                        <p className='data'>{(this.state.currentBalance - this.state.totalInvested).toFixed(2)}</p>
+                                        <p className='data'>${this.state.profit.toFixed(2)}</p>
                                     </div>
                                     <div>
                                         <p className='balance'>BTC PRICE</p><p className='small-tag'>USD</p>
-                                        <p className='data'>{this.state.currencyExchangeRate}</p>
+                                        <p className='data'>${this.state.currencyExchangeRate}</p>
                                     </div>
                                 </Col>
 
@@ -445,7 +231,8 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
 
                         <div className='main-chart'>
                             <div className='chart'>
-                                <Chart width={950} height={350} scale={{x: 'time'}}
+                                <Chart padding={{top: 50, bottom: 50, left: 70, right: 50}}
+                                       width={950} height={350} scale={{x: 'time'}}
                                        containerComponent={
                                            <ZoomVoronoiCursorContainer zoomDimension='x'
                                                                        zoomDomain={this.state.zoomDomain}
@@ -492,6 +279,8 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                                                padding={{bottom: 20}}
                                     />
                                     <ChartAxis dependentAxis crossAxis
+                                               tickFormat={(t) => `$${(t)}`}
+
                                                style={{
                                                    axis: {
                                                        stroke: '#d1d9e0',
@@ -512,7 +301,14 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                                             duration: 2000,
                                             onLoad: {duration: 1000}
                                         }}
-                                        style={{data: {fill: '#F6D245', fillOpacity: 0.1, stroke: '#EC862F'}}}
+                                        style={{
+                                            data: {
+                                                fill: '#CB4A8F',
+                                                fillOpacity: 0.1,
+                                                stroke: '#CB4A8F',
+                                                padding: 100
+                                            }
+                                        }}
                                         data={this.state.datesWithBalance}
                                     />
                                 </Chart>
@@ -522,13 +318,13 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                                 <VictoryBrushContainer brushDimension='x'
                                                        brushDomain={this.state.selectedDomain}
                                                        onBrushDomainChange={this.handleBrush.bind(this)}
-                                                       brushStyle={{fill: '#F6D245', opacity: 0.4}}
+                                                       brushStyle={{fill: '#CB4A8F', opacity: 0.2}}
                                 />
                             }
                             >
                                 <ChartAxis
-                                    tickValues={this.state.monthRange}
-                                    tickFormat={(x) => monthNames[new Date(x).getMonth()]}
+
+
                                     style={{
                                         axis: {
                                             stroke: '#d1d9e0'
@@ -541,14 +337,13 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
 
                                 />
 
-
                                 <ChartLine
                                     animate={{
                                         duration: 2000,
                                         onLoad: {duration: 1000}
                                     }}
                                     style={{
-                                        data: {stroke: "#EC862F"},
+                                        data: {stroke: "#CB4A8F"},
                                         parent: {border: "1px solid #41b6c4"}
                                     }}
                                     data={this.state.datesWithBalance}
@@ -565,19 +360,50 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                                         <p className='time'>{moment(key).format('YYYY-M-DD H:mm')}</p>
                                     </Col>
                                     <Col xs={3}>
-                                        <p className='history'>{(topFiveTransactionHistory[key]).toFixed(8)}</p>
+                                        {topFiveTransactionHistory[key] > 0 &&
+                                        <p className='history'>+ {topFiveTransactionHistory[key]}</p>
+                                        }
+                                        {topFiveTransactionHistory[key] < 0 &&
+                                        <p className='negative'>- {Math.abs(topFiveTransactionHistory[key])}</p>
+                                        }
                                     </Col>
                                 </Row>
                             ))}
+                            {Object.keys(restTransactionHistory).length >= 1 &&
+
+                            <Accordion>
+                                <Accordion.Toggle as={NavLink} eventKey="0" hidden={this.state.hideDiv} >
+                                    <div className='toggle' onClick={this.handleClick}>
+                                        Show More
+                                    </div>
+                                </Accordion.Toggle>
+
+
+                                <Accordion.Collapse eventKey="0">
+                                    <div>{Object.keys(this.state.restTransactionHistory).map((key, index) => (
+                                        <Row>
+                                            <Col xs={5}>
+                                                <p className='time'>{moment(key).format('YYYY-M-DD H:mm')}</p>
+                                            </Col>
+                                            <Col xs={3}>
+                                                {restTransactionHistory[key] > 0 &&
+                                                <p className='history'>+ {restTransactionHistory[key]}</p>
+                                                }
+                                                {restTransactionHistory[key] < 0 &&
+                                                <p className='negative'>- {Math.abs(restTransactionHistory[key])}</p>
+                                                }
+                                            </Col>
+                                        </Row>
+                                    ))}</div>
+                                </Accordion.Collapse>
+                            </Accordion>}
 
                         </div>
                     </Container>
 
                 </div>
             </React.Fragment>
-
         )
-
     }
 }
 

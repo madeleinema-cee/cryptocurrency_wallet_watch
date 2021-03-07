@@ -15,12 +15,13 @@
     width: 90px;
     height: 90px;
     margin-right: 10px;
+    margin-bottom: 20px;
 
 }
 
 .title {
     font-family: 'Istok Web', serif;
-    color: #e62222;
+    color: #D34C8E;
     font-weight: 700;
     display: inline-block;
 }
