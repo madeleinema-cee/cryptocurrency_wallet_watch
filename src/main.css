@@ -71,10 +71,9 @@
 
 .small-title {
     color: white;
-    display: inline-block;
-    text-align: left;
-    float: left;
     font-size: smaller;
+    padding-top: 30px;
+    margin-top: 20px;
 }
 
 .time {
@@ -150,4 +149,51 @@
     color: #17A2B8;
     text-align: left;
     font-size: smaller;
+}
+
+
+.copyright {
+    text-align: center;
+    color: #D34C8E;
+     position: absolute;
+    bottom: 5%;
+
+}
+
+.copy-right-center {
+    margin: auto;
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-page-copyright {
+    padding-top: 10px;
+    text-align: center;
+    color: #D34C8E;
+}
+
+.copy-link {
+    color: #17A2B8;
+}
+
+.example {
+    color: white;
+    font-size: small;
+}
+
+.address{
+    color: white;
+    font-size: small;
+}
+
+.subtitle {
+    color: #17A2B8;
+    font-style: italic;
+    font-size: larger;
+}
+
+Col {
+    border: 1px red solid;
 }
