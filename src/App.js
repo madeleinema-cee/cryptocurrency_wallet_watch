@@ -1,7 +1,7 @@
 import './App.css';
 import React, {Component} from 'react';
 import AddAddress from "./components/AddAddress";
-import { Col, Container, Row, Accordion, NavLink} from 'react-bootstrap';
+import {Col, Container, Row, Accordion, NavLink} from 'react-bootstrap';
 import './main.css';
 import {
     Chart,
@@ -41,12 +41,13 @@ class App extends Component {
         this.handleClick = this.handleClick.bind(this)
     }
 
-    handleClick(){
-       this.setState({
-          hideDiv: true
-
+    handleClick() {
+        this.setState({
+            hideDiv: true
         })
-      }
+    }
+
+
 
     refreshPage() {
         window.location.reload(false)
@@ -97,6 +98,24 @@ class App extends Component {
         return inputData
     }
 
+    inputAddress = () => {
+        let address = document.getElementById('address1').textContent
+        this.fetchBitcoinTranscationDataWithAPI(address)
+        console.log(address)
+    }
+
+    inputAddress2 = () => {
+        let address = document.getElementById('address2').textContent
+        this.fetchBitcoinTranscationDataWithAPI(address)
+        console.log(address)
+    }
+
+    inputAddress3 = () => {
+        let address = document.getElementById('address3').textContent
+        this.fetchBitcoinTranscationDataWithAPI(address)
+        console.log(address)
+    }
+
     addAddress = (address) => {
         this.fetchBitcoinTranscationDataWithAPI(address)
     }
@@ -143,27 +162,46 @@ class App extends Component {
                             <div className='center'>
                                 <div>
                                     <img className='image' src={logo} alt='logo'/>
-                                    <h1 className='title'>walletwatch.xyz</h1>
+                                    <h1 className='title'>WALLETWATCH.XYZ</h1>
+                                    <div className='subtitle'>Tracking the Progress of Your Bitcoin Investment</div>
                                     <AddAddress addAddress={this.addAddress}/>
+
+                                    <div className='example'>
+                                        EXAMPLE ADDRESSES:
+                                    </div>
+                                    <div className='address'>
+                                        <p type='button' id='address1' onClick={this.inputAddress}>3E1jAe14xLtRhJDmBgQCu98fiV7A3eq211</p>
+                                        <p type='button' id='address2' onClick={this.inputAddress2}>3JBqbYDLnQA7u2sNHraPL4yJSTjS3JUEa3</p>
+                                        <p type='button' id='address3' onClick={this.inputAddress3}>3KYwVvvvfNApEDjnVjgQU4swmSPhNKCzwD</p>
+                                    </div>
+                                    <div className='copy-right-center'>
+                                        <div className='copyright'>
+                                            <small>Made by <a className="copy-link" href="https://madeleinema.com/">Madeleine
+                                                Ma</a> @Copyright 2021</small>
+                                        </div>
+                                    </div>
                                 </div>
+
                             </div>
                         </Container>
+
                     </div>
+
 
                 </React.Fragment>
             )
         }
         if (this.state.isLoaded === 'spinner') {
             return (
-                 <div className='height'>
+                <div className='height'>
 
                     <div className='loading-title'>Loading might take some time...</div>
                     <br/>
                     <div>
-                    <MeteorRainLoading size={'large'} color={'#18DCD6'}/>
+                        <MeteorRainLoading size={'large'} color={'#18DCD6'}/>
                     </div>
-                 </div>
-                )
+                </div>
+            )
 
         }
 
@@ -173,22 +211,19 @@ class App extends Component {
                     <Container>
                         <div className='center' onClick={this.refreshPage}>
                             <img className='image2' src={logo} alt='logo'/>
-                            <div className='chart-title'>walletwatch.xyz</div>
+                            <div className='chart-title' type='button'>walletwatch.xyz</div>
                         </div>
                         <br/>
                         <div className='addressSection'>
-                            <div className='small-title'>Address: {this.state.address}</div>
+                            <Row>
 
-                            <div style={{
-                                position: 'absolute',
-                                right: '13%',
-                                top: '8%',
-                                height: '50%',
-                                display: 'inline-block'
-                            }}>
+                            <Col xs={6}>
+                            <div className='small-title'>Address: {this.state.address}</div>
+                            </Col>
+                                <Col xs={6}>
                                 <AddAddress addAddress={this.addAddress}/>
-                            </div>
-                            <br/>
+                                </Col>
+                            </Row>
                         </div>
 
 
@@ -211,7 +246,7 @@ class App extends Component {
                                     </div>
                                     <div>
                                         <p className='balance'>TOTAL INVESTED</p><p className='small-tag'>USD</p>
-                                        <p className='data'>{this.state.totalInvested}</p>
+                                        <p className='data'>${this.state.totalInvested}</p>
                                     </div>
                                 </Col>
                                 <Col>
@@ -372,7 +407,7 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                             {Object.keys(restTransactionHistory).length >= 1 &&
 
                             <Accordion>
-                                <Accordion.Toggle as={NavLink} eventKey="0" hidden={this.state.hideDiv} >
+                                <Accordion.Toggle as={NavLink} eventKey="0" hidden={this.state.hideDiv}>
                                     <div className='toggle' onClick={this.handleClick}>
                                         Show More
                                     </div>
@@ -399,9 +434,14 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                             </Accordion>}
 
                         </div>
+                        <div className='main-page-copyright'>
+                            <small>Made by <a className="copy-link" href="https://madeleinema.com/">Madeleine
+                                Ma</a> @Copyright 2021</small>
+                        </div>
                     </Container>
 
                 </div>
+
             </React.Fragment>
         )
     }
