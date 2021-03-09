@@ -37,7 +37,7 @@ class App extends Component {
             hideDiv: false,
         }
 
-        this.btcUsdApiBase = 'http://127.0.0.1:5000/api/btc?address=';
+        this.btcUsdApiBase = 'https://api.walletwatch.xyz/api/btc?address=';
         this.handleClick = this.handleClick.bind(this)
     }
 
@@ -46,8 +46,6 @@ class App extends Component {
             hideDiv: true
         })
     }
-
-
 
     refreshPage() {
         window.location.reload(false)
@@ -101,7 +99,6 @@ class App extends Component {
     inputAddress = () => {
         let address = document.getElementById('address1').textContent
         this.fetchBitcoinTranscationDataWithAPI(address)
-        console.log(address)
     }
 
     inputAddress2 = () => {
@@ -170,9 +167,11 @@ class App extends Component {
                                         EXAMPLE ADDRESSES:
                                     </div>
                                     <div className='address'>
-                                        <p type='button' id='address1' onClick={this.inputAddress}>3E1jAe14xLtRhJDmBgQCu98fiV7A3eq211</p>
-                                        <p type='button' id='address2' onClick={this.inputAddress2}>3JBqbYDLnQA7u2sNHraPL4yJSTjS3JUEa3</p>
-                                        <p type='button' id='address3' onClick={this.inputAddress3}>3KYwVvvvfNApEDjnVjgQU4swmSPhNKCzwD</p>
+                                        <a type='button' id='address1' onClick={this.inputAddress}>3E1jAe14xLtRhJDmBgQCu98fiV7A3eq211</a>
+                                        <br/>
+                                        <a type='button' id='address2' onClick={this.inputAddress2}>3JBqbYDLnQA7u2sNHraPL4yJSTjS3JUEa3</a>
+                                        <br/>
+                                        <a type='button' id='address3' onClick={this.inputAddress3}>3KYwVvvvfNApEDjnVjgQU4swmSPhNKCzwD</a>
                                     </div>
                                     <div className='copy-right-center'>
                                         <div className='copyright'>
