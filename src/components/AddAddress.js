@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Container, Row, Col, Button, Form} from 'react-bootstrap';
+import {Container, Row, Col, Button, Form, InputGroup, FormControl} from 'react-bootstrap';
 import './mainForm.css';
 import logo from './Logo.png'
 
@@ -33,21 +33,22 @@ export class AddAddress extends Component {
 
     render() {
         return (
-            <Form onSubmit={this.onSubmit}>
-                <div className='test'>
-                    <Form.Row>
-                        <Col lg={10}>
+            <Form onSubmit={this.onSubmit} inline>
+                    <div className='special-form'>
+                        <div className='input-area'>
+
                     <Form.Control type='text' name='address' placeholder='Add blockchain.com wallet address'
                            value={this.state.address} onChange={this.onChange}/>
+                        </div>
 
-                        </Col>
-                        <Col lg={2}>
-                        <Button variant='info' type='submit'>Submit</Button>
-                        </Col>
-                    </Form.Row>
-                </div>
+                    <div className='form-submit'>
+                        <div type='button'>Submit</div>
+                    </div>
+                    </div>
+
 
             </Form>
+
         )
     }
 }
