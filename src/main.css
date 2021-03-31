@@ -1,5 +1,7 @@
 :root {
-    --main-orange: #49D9E9;
+    --main-blue: #49D9E9;
+    --main-black: #392f41;
+    --main-red: #D34C8E
 }
 
 .height {
@@ -64,7 +66,7 @@
 }
 
 .data {
-    color: var(--main-orange);
+    color: var(--main-blue);
     font-weight: 700;
     font-size: x-large;
 }
@@ -76,13 +78,23 @@
     margin-top: 20px;
 }
 
+.small-title2 {
+    color: white;
+    font-size: smaller;
+}
+
+.search-bar {
+    margin: auto;
+    width: 99%;
+    border: 1px solid red;
+}
+
 .time {
     color: white;
     font-size: small;
     display: inline-block;
     margin-right: 10px;
     padding: 5px;
-
 }
 
 .form {
@@ -120,7 +132,7 @@
 
 .history {
     display: inline-block;
-    background-color: rgba(25,220,213,0.3);
+    background-color: rgba(25, 220, 213, 0.3);
     color: #18DCD6;
     padding: 5px 5px 5px 10px;
     border-radius: 5px;
@@ -155,7 +167,7 @@
 .copyright {
     text-align: center;
     color: #D34C8E;
-     position: absolute;
+    position: absolute;
     bottom: 5%;
 
 }
@@ -183,7 +195,7 @@
     font-size: small;
 }
 
-.address{
+.address {
     color: white;
     font-size: small;
 }
@@ -194,6 +206,169 @@
     font-size: larger;
 }
 
-Col {
-    border: 1px red solid;
+.mobile-background {
+    background-color: var(--main-black);
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    font-family: 'Istok Web', serif;
+}
+
+.mobile-center {
+    text-align: center;
+    margin: 0;
+    align-self: center;
+}
+
+.mobile-image {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+.mobile-title {
+    font-size: x-large;
+    color: var(--main-red);
+    font-family: 'Istok Web', serif;
+}
+
+.mobile-subtitle {
+    font-size: medium;
+    color: var(--main-blue);
+    font-style: italic;
+}
+
+.mobile-example {
+    font-size: small;
+    color: white;
+}
+
+.mobile-copyright {
+    text-align: center;
+    color: #D34C8E;
+    position: absolute;
+    bottom: 2%;
+}
+
+.mobile-height {
+    min-height: 100vh;
+    background-color: var(--main-black);
+    padding: 10px 0;
+}
+
+.mobile-small-title {
+    color: white;
+    font-size: smaller;
+}
+
+.mobile-main-chart {
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.mobile-balance {
+    font-family: 'Istok Web', serif;
+    color: white;
+    font-size: x-small;
+    display: inline-block;
+    padding-left: 20px;
+}
+
+.mobile-data {
+    font-family: 'Istok Web', serif;
+    color: var(--main-blue);
+    font-size: small;
+    font-weight: bold;
+    padding-left: 20px;
+    margin-top: -15px;
+}
+
+.mobile-currentBalance {
+    color: var(--main-red);
+    font-family: 'Istok Web', serif;
+    font-size: small;
+    font-weight: bold;
+    padding-left: 20px;
+    margin-top: -15px;
+}
+
+.mobile-chart {
+    margin-bottom: 20px;
+}
+
+.mobile-small-tag {
+    font-size: 5px;
+    background-color: #f2ecde;
+    display: inline-block;
+    margin-left: 10px;
+    margin-top: -10px;
+    margin-bottom: -30px;
+    border-radius: 10%;
+    padding-left: 2px;
+    padding-right: 2px;
+    padding-bottom: -10px;
+    font-weight: bold;
+}
+
+.mobile-section {
+    margin-bottom: 5px;
+}
+
+.mobile-history {
+    margin-left: 20px;
+    display: inline-block;
+    background-color: rgba(25, 220, 213, 0.3);
+    color: #18DCD6;
+    padding: 5px 5px 5px 10px;
+    border-radius: 5px;
+    font-size: x-small;
+    text-align: left;
+    min-width: 100px;
+    font-weight: bold;
+    letter-spacing: .1rem;
+}
+
+.mobile-time {
+    color: white;
+    font-size: x-small;
+    display: inline-block;
+    padding-left: 20px;
+
+}
+
+.mobile-negative {
+    margin-left: 20px;
+    display: inline-block;
+    background-color: rgba(211, 76, 142, 0.3);
+    color: #D34C8E;
+    padding: 5px 5px 5px 10px;
+    border-radius: 5px;
+    font-size: smaller;
+    text-align: left;
+    min-width: 100px;
+    font-weight: bolder;
+    letter-spacing: .1rem;
+}
+
+.input-field {
+    width: 50%;
+}
+
+@media only screen and (min-width: 599px) {
+    .form-submit {
+        display: inline-block;
+    }
+    .special-form {
+        padding-top: 20px;
+        padding-bottom: 20px;
+        margin: auto;
+        width: 99%;
+    }
+    .input-area {
+        display: inline-block;
+        width: 120%;
+        border: 1px solid red;
+    }
+
 }
