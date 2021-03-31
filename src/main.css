@@ -83,12 +83,6 @@
     font-size: smaller;
 }
 
-.search-bar {
-    margin: auto;
-    width: 99%;
-    border: 1px solid red;
-}
-
 .time {
     color: white;
     font-size: small;
@@ -344,10 +338,10 @@
     color: #D34C8E;
     padding: 5px 5px 5px 10px;
     border-radius: 5px;
-    font-size: smaller;
+    font-size: x-small;
     text-align: left;
     min-width: 100px;
-    font-weight: bolder;
+    font-weight: bold;
     letter-spacing: .1rem;
 }
 
@@ -359,16 +353,103 @@
     .form-submit {
         display: inline-block;
     }
-    .special-form {
-        padding-top: 20px;
-        padding-bottom: 20px;
-        margin: auto;
-        width: 99%;
-    }
-    .input-area {
+
+    input[type=text], select {
+        width: 60%;
+        padding: 10px;
+        margin: 8px 0;
         display: inline-block;
-        width: 120%;
-        border: 1px solid red;
+        border: 1px solid #343a40;
+        background-color: #3d3b4f;
+        border-radius: 4px;
+    }
+
+    input[type=submit] {
+        display: inline-block;
+        background-color: #17A2B8;
+        color: white;
+        padding: 10px;
+        margin-left: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #17A2B8;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    input[type=submit]:hover {
+        opacity: 70%;
+
+    }
+
+    .address-part {
+        display: inline-block;
+        padding-bottom: 10px;
+    }
+
+    .addaddress {
+        display: inline-block;
+        width: 50%;
+        text-align: right;
+        float: right;
+        margin-bottom: -20px;
+    }
+
+    .clearfix::before {
+        content: "";
+        clear: both;
+        display: table;
+    }
+}
+
+@media only screen and (max-width: 599px) {
+    .form-submit {
+        display: inline-block;
+    }
+
+    input[type=text], select {
+        width: 60%;
+        padding: 5px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #343a40;
+        background-color: #3d3b4f;
+        border-radius: 4px;
+    }
+
+    input[type=submit] {
+        display: inline-block;
+        background-color: #17A2B8;
+        color: white;
+        padding: 5px;
+        margin-left: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #17A2B8;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .address-part {
+        display: inline-block;
+        padding-bottom: 20px;
+    }
+
+    .addaddress {
+        display: inline-block;
+        width: 50%;
+        text-align: right;
+        float: right;
+        padding-top: 20px;
+    }
+
+    .clearfix::before {
+        content: "";
+        clear: both;
+        display: table;
     }
 
 }
+
+
+
+
+

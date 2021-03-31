@@ -33,21 +33,19 @@ export class AddAddress extends Component {
 
     render() {
         return (
-            <Form onSubmit={this.onSubmit} inline>
-                    <div className='special-form'>
-                        <div className='input-area'>
+            <div onSubmit={this.onSubmit}>
+                <div>
+                    <form>
+                        <input type='text' name='address' placeholder='Add blockchain.com wallet address'
+                               value={this.state.address} onChange={this.onChange}/>
+<div className='form-submit'>
+                        <input type="submit" value="Submit"/>
+</div>
+                    </form>
+                </div>
 
-                    <Form.Control type='text' name='address' placeholder='Add blockchain.com wallet address'
-                           value={this.state.address} onChange={this.onChange}/>
-                        </div>
+            </div>
 
-                    <div className='form-submit'>
-                        <div type='button'>Submit</div>
-                    </div>
-                    </div>
-
-
-            </Form>
 
         )
     }

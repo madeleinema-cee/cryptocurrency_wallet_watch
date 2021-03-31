@@ -38,7 +38,7 @@ class App extends Component {
             width: window.innerWidth
         }
 
-        this.btcUsdApiBase = 'http://127.0.0.1:5000/api/btc?address=';
+        this.btcUsdApiBase = 'https://api.walletwatch.xyz/api/btc?address=';
         this.handleClick = this.handleClick.bind(this)
     }
 
@@ -73,12 +73,12 @@ class App extends Component {
                         isLoaded: 'result',
                         datesWithBalance: this.formatData(result.balance),
                         address: address,
-                        currentBalance: result.btcbalance * result.btctousd,
+                        currentBalance: this.handelBalance(result.btcbalance * result.btctousd),
                         currencyExchangeRate: result.btctousd,
                         topFiveTransactionHistory: this.getTopFiveTransactionHistory(result.transactionhistory).topFive,
                         restTransactionHistory: this.getTopFiveTransactionHistory(result.transactionhistory).rest,
                         totalInvested: result.totalinvested.toFixed(2),
-                        btcBalance: (result.btcbalance).toFixed(8),
+                        btcBalance: this.handelBalance(result.btcbalance).toFixed(8),
                         profit: result.totalprofit,
                         profitMargin: result.profitmargin
                     });
@@ -95,6 +95,16 @@ class App extends Component {
                 }
             )
 
+    }
+
+    handelBalance(data) {
+        if (data < 0) {
+            data = 0
+            console.log(data)
+            return data
+        } else {
+            return data
+        }
     }
 
     handleWindowSizeChange = () => {
@@ -122,13 +132,11 @@ class App extends Component {
     inputAddress2 = () => {
         let address = document.getElementById('address2').textContent
         this.fetchBitcoinTranscationDataWithAPI(address)
-        console.log(address)
     }
 
     inputAddress3 = () => {
         let address = document.getElementById('address3').textContent
         this.fetchBitcoinTranscationDataWithAPI(address)
-        console.log(address)
     }
 
     addAddress = (address) => {
@@ -170,6 +178,7 @@ class App extends Component {
         } = this.state;
         const isMobile = width <= 600
         const ZoomVoronoiCursorContainer = createContainer('zoom', 'voronoi');
+
 
         if (isMobile) {
             if (this.state.isLoaded === 'form') {
@@ -232,62 +241,69 @@ class App extends Component {
             return (
                 <React.Fragment>
                     <div className='mobile-height'>
-                        <div className='mobile-center' onClick={this.refreshPage}>
-                            <img className='image2' src={logo} alt='logo'/>
-                            <div className='chart-title' type='button'>walletwatch.xyz</div>
+                        <div className='mobile-center'>
+                            <img className='image2' src={logo} alt='logo' onClick={this.refreshPage}/>
+                            <div className='chart-title' type='button' onClick={this.refreshPage}>walletwatch.xyz</div>
                             <div className='small-title2'>Address: {this.state.address}</div>
                             <div className='search-bar'>
-                            <AddAddress addAddress={this.addAddress}/>
+                                <AddAddress addAddress={this.addAddress}/>
                             </div>
                         </div>
 
                         <div className='mobile-main-chart'>
                             <div className='mobile-section'>
                                 <Row>
-                                <Col style={{borderLeft: '2px solid grey', borderRight: '2px solid grey'}}>
-                                    <div>
-                                        <p className='mobile-balance'>BALANCE</p><p className='mobile-small-tag'>USD</p>
-                                        <p className='mobile-currentBalance'> ${this.state.currentBalance.toFixed(2)}</p>
-                                    </div>
-                                </Col>
-                                <Col>
-                                    <div>
-                                        <p className='mobile-balance'>BTC BALANCE</p><p className='mobile-small-tag'>BTC</p>
-                                        <p className='mobile-data'>{this.state.btcBalance}</p>
-                                    </div>
-                                </Col>
+                                    <Col style={{borderLeft: '2px solid grey', borderRight: '2px solid grey'}}>
+                                        <div>
+                                            <p className='mobile-balance'>BALANCE</p><p
+                                            className='mobile-small-tag'>USD</p>
+                                            <p className='mobile-currentBalance'>
+                                                ${this.state.currentBalance.toFixed(2)}
+                                            </p>
+                                        </div>
+                                    </Col>
+                                    <Col>
+                                        <div>
+                                            <p className='mobile-balance'>BTC BALANCE</p><p
+                                            className='mobile-small-tag'>BTC</p>
+                                            <p className='mobile-data'>{this.state.btcBalance}</p>
+                                        </div>
+                                    </Col>
                                 </Row>
                             </div>
                             <div className='mobile-section'>
                                 <Row>
-                                <Col style={{borderLeft: '2px solid grey', borderRight: '2px solid grey'}}>
-                                    <div>
-                                        <p className='mobile-balance'>PROFIT MARGIN</p><p className='mobile-small-tag'></p>
-                                        <p className='mobile-data'>{this.state.profitMargin.toFixed(3)} %</p>
-                                    </div>
-                                </Col>
-                                <Col>
-                                    <div>
-                                        <p className='mobile-balance'>PROFIT</p><p className='mobile-small-tag'>USD</p>
-                                        <p className='mobile-data'>${this.state.profit.toFixed(2)}</p>
-                                    </div>
-                                </Col>
+                                    <Col style={{borderLeft: '2px solid grey', borderRight: '2px solid grey'}}>
+                                        <div>
+                                            <p className='mobile-balance'>PROFIT MARGIN</p><p className='mobile-small-tag'> </p>
+                                            <p className='mobile-data'>{this.state.profitMargin.toFixed(3)} %</p>
+                                        </div>
+                                    </Col>
+                                    <Col>
+                                        <div>
+                                            <p className='mobile-balance'>PROFIT</p><p
+                                            className='mobile-small-tag'>USD</p>
+                                            <p className='mobile-data'>${this.state.profit.toFixed(2)}</p>
+                                        </div>
+                                    </Col>
                                 </Row>
                             </div>
                             <div className='mobile-section'>
                                 <Row>
-                                <Col style={{borderLeft: '2px solid grey', borderRight: '2px solid grey'}}>
-                                    <div>
-                                        <p className='mobile-balance'>TOTAL INVESTED</p><p className='mobile-small-tag'>USD</p>
-                                        <p className='mobile-data'>${this.state.totalInvested}</p>
-                                    </div>
-                                </Col>
-                                <Col>
-                                    <div>
-                                        <p className='mobile-balance'>BTC PRICE</p><p className='mobile-small-tag'>USD</p>
-                                        <p className='mobile-data'>${this.state.currencyExchangeRate}</p>
-                                    </div>
-                                </Col>
+                                    <Col style={{borderLeft: '2px solid grey', borderRight: '2px solid grey'}}>
+                                        <div>
+                                            <p className='mobile-balance'>TOTAL INVESTED</p><p
+                                            className='mobile-small-tag'>USD</p>
+                                            <p className='mobile-data'>${this.state.totalInvested}</p>
+                                        </div>
+                                    </Col>
+                                    <Col>
+                                        <div>
+                                            <p className='mobile-balance'>BTC PRICE</p><p
+                                            className='mobile-small-tag'>USD</p>
+                                            <p className='mobile-data'>${this.state.currencyExchangeRate}</p>
+                                        </div>
+                                    </Col>
                                 </Row>
                             </div>
 
@@ -530,21 +546,19 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                 <React.Fragment>
                     <div className='height'>
                         <Container>
-                            <div className='center' onClick={this.refreshPage}>
-                                <img className='image2' src={logo} alt='logo'/>
-                                <div className='chart-title' type='button'>walletwatch.xyz</div>
+                            <div className='center'>
+                                <img className='image2' onClick={this.refreshPage} src={logo} alt='logo'/>
+                                <div className='chart-title' type='button' onClick={this.refreshPage}>walletwatch.xyz
+                                </div>
                             </div>
                             <br/>
-                            <div className='addressSection'>
-                                <Row>
+                            <div className='address-part'>
 
-                                    <Col xs={6}>
-                                        <div className='small-title'>Address: {this.state.address}</div>
-                                    </Col>
-                                    <Col xs={6}>
-                                        <AddAddress addAddress={this.addAddress}/>
-                                    </Col>
-                                </Row>
+                                <div className='small-title'>Address: {this.state.address}</div>
+                            </div>
+
+                            <div className='addaddress'>
+                                <AddAddress addAddress={this.addAddress}/>
                             </div>
 
 
