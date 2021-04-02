@@ -1,7 +1,11 @@
 import './App.css';
 import React, {Component} from 'react';
 import AddAddress from "./components/AddAddress";
-import {Col, Container, Row, Accordion, NavLink} from 'react-bootstrap';
+import HomePage from "./components/HomePage";
+import MainPageHeader from "./components/MainPageHeader";
+import TransactionHistory from "./components/TransactionHistory";
+import LoadingAnimation from "./components/LoadingAnimation";
+import {Col, Container, Row} from 'react-bootstrap';
 import './main.css';
 import {
     Chart,
@@ -16,7 +20,7 @@ import moment from "moment";
 import {MeteorRainLoading} from 'react-loadingg'
 
 
-import logo from './components/Logo.png'
+import Examples from "./components/Examples";
 
 
 class App extends Component {
@@ -34,12 +38,10 @@ class App extends Component {
             totalInvested: null,
             btcBalance: null,
             profit: null,
-            hideDiv: false,
             width: window.innerWidth
         }
 
-        this.btcUsdApiBase = 'https://api.walletwatch.xyz/api/btc?address=';
-        this.handleClick = this.handleClick.bind(this)
+        this.btcUsdApiBase = 'http://127.0.0.1:5000/api/btc?address=';
     }
 
     componentWillMount() {
@@ -50,18 +52,7 @@ class App extends Component {
         window.removeEventListener('resize', this.handleWindowSizeChange)
     }
 
-    handleClick() {
-        this.setState({
-            hideDiv: true
-        })
-    }
-
-    refreshPage() {
-        window.location.reload(false)
-
-    }
-
-    fetchBitcoinTranscationDataWithAPI(address) {
+    fetchBitcoinTransactionDataWithAPI(address) {
         this.setState({
             isLoaded: 'spinner'
         })
@@ -124,23 +115,22 @@ class App extends Component {
         return inputData
     }
 
-    inputAddress = () => {
-        let address = document.getElementById('address1').textContent
-        this.fetchBitcoinTranscationDataWithAPI(address)
+    inputAddress = (address) => {
+        this.fetchBitcoinTransactionDataWithAPI(address)
     }
 
     inputAddress2 = () => {
         let address = document.getElementById('address2').textContent
-        this.fetchBitcoinTranscationDataWithAPI(address)
+        this.fetchBitcoinTransactionDataWithAPI(address)
     }
 
     inputAddress3 = () => {
         let address = document.getElementById('address3').textContent
-        this.fetchBitcoinTranscationDataWithAPI(address)
+        this.fetchBitcoinTransactionDataWithAPI(address)
     }
 
     addAddress = (address) => {
-        this.fetchBitcoinTranscationDataWithAPI(address)
+        this.fetchBitcoinTransactionDataWithAPI(address)
     }
 
     handleZoom(domain) {
@@ -171,14 +161,9 @@ class App extends Component {
     }
 
     render() {
-        const {
-            isLoaded, address, datesWithBalance, currentBalance, monthRange, currencyExchangeRate,
-            topFiveTransactionHistory, totalInvested, btcBalance, restTransactionHistory, loading, profit,
-            profitMargin, hideDiv, width
-        } = this.state;
+        const {width} = this.state;
         const isMobile = width <= 600
         const ZoomVoronoiCursorContainer = createContainer('zoom', 'voronoi');
-
 
         if (isMobile) {
             if (this.state.isLoaded === 'form') {
@@ -187,54 +172,18 @@ class App extends Component {
                         <div className='mobile-background'>
                             <Container className="my-auto">
                                 <div className='mobile-center'>
-                                    <div>
-                                        <img className='mobile-image' src={logo} alt='logo'/>
-                                        <h1 className='mobile-title'>WALLETWATCH.XYZ</h1>
-                                        <div className='mobile-subtitle'>Tracking the Progress of Your Bitcoin
-                                            Investment
-                                        </div>
-                                        <AddAddress addAddress={this.addAddress}/>
-
-                                        <div className='mobile-example'>
-                                            EXAMPLE ADDRESSES:
-                                        </div>
-                                        <div className='address'>
-                                            <a type='button' id='address1'
-                                               onClick={this.inputAddress}>3E1jAe14xLtRhJDmBgQCu98fiV7A3eq211</a>
-                                            <br/>
-                                            <a type='button' id='address2'
-                                               onClick={this.inputAddress2}>3JBqbYDLnQA7u2sNHraPL4yJSTjS3JUEa3</a>
-                                            <br/>
-                                            <a type='button' id='address3'
-                                               onClick={this.inputAddress3}>3KYwVvvvfNApEDjnVjgQU4swmSPhNKCzwD</a>
-                                        </div>
-                                        <div className='copy-right-center'>
-                                            <div className='mobile-copyright'>
-                                                <small>Made by <a className="copy-link" href="https://madeleinema.com/">Madeleine
-                                                    Ma</a> @Copyright 2021</small>
-                                            </div>
-                                        </div>
-                                    </div>
-
+                                    <HomePage/>
+                                    <AddAddress addAddress={this.addAddress}/>
+                                    <Examples/>
                                 </div>
                             </Container>
-
                         </div>
-
-
                     </React.Fragment>
                 )
             }
             if (this.state.isLoaded === 'spinner') {
                 return (
-                    <div className='height'>
-
-                        <div className='loading-title'>Loading might take some time...</div>
-                        <br/>
-                        <div>
-                            <MeteorRainLoading size={'large'} color={'#18DCD6'}/>
-                        </div>
-                    </div>
+                    <LoadingAnimation/>
                 )
 
             }
@@ -242,8 +191,7 @@ class App extends Component {
                 <React.Fragment>
                     <div className='mobile-height'>
                         <div className='mobile-center'>
-                            <img className='image2' src={logo} alt='logo' onClick={this.refreshPage}/>
-                            <div className='chart-title' type='button' onClick={this.refreshPage}>walletwatch.xyz</div>
+                            <MainPageHeader/>
                             <div className='small-title2'>Address: {this.state.address}</div>
                             <div className='search-bar'>
                                 <AddAddress addAddress={this.addAddress}/>
@@ -275,7 +223,8 @@ class App extends Component {
                                 <Row>
                                     <Col style={{borderLeft: '2px solid grey', borderRight: '2px solid grey'}}>
                                         <div>
-                                            <p className='mobile-balance'>PROFIT MARGIN</p><p className='mobile-small-tag'> </p>
+                                            <p className='mobile-balance'>PROFIT MARGIN</p><p
+                                            className='mobile-small-tag'> </p>
                                             <p className='mobile-data'>{this.state.profitMargin.toFixed(3)} %</p>
                                         </div>
                                     </Col>
@@ -361,11 +310,9 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                                     />
                                     <ChartAxis dependentAxis crossAxis
                                                tickFormat={(t) => `$${(t)}`}
-
                                                style={{
                                                    axis: {
                                                        stroke: '#d1d9e0',
-
                                                    },
                                                    tickLabels: {
                                                        fill: '#d1d9e0',
@@ -375,7 +322,6 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                                                        stroke: ({tick}) => tick > 5000 ? "#adb5bd" : "#adb5bd",
                                                        opacity: 0.1
                                                    }
-
                                                }}/>
                                     <ChartArea
                                         animate={{
@@ -415,7 +361,6 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                                     }}
 
                                 />
-
                                 <ChartLine
                                     animate={{
                                         duration: 2000,
@@ -426,55 +371,13 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                                         parent: {border: "1px solid #41b6c4"}
                                     }}
                                     data={this.state.datesWithBalance}
-
                                 />
                             </Chart>
                         </div>
 
-                        <div className='mobile-main-chart mobile-center'>
-                            <div className='balance'>TRANSACTION HISTORY</div>
-                            {Object.keys(this.state.topFiveTransactionHistory).map((key, index) => (
-                                <Row>
-                                    <Col xs={5}>
-                                        <p className='mobile-time'>{moment(key).format('YYYY-M-DD H:mm')}</p>
-                                    </Col>
-                                    <Col xs={5}>
-                                        {topFiveTransactionHistory[key] > 0 &&
-                                        <p className='mobile-history'>+ {topFiveTransactionHistory[key]}</p>
-                                        }
-                                        {topFiveTransactionHistory[key] < 0 &&
-                                        <p className='mobile-negative'>- {Math.abs(topFiveTransactionHistory[key])}</p>
-                                        }
-                                    </Col>
-                                </Row>
-                            ))}
-                            {Object.keys(restTransactionHistory).length >= 1 &&
-
-                            <Accordion>
-                                <Accordion.Toggle as={NavLink} eventKey="0" hidden={this.state.hideDiv}>
-                                    <div className='toggle' onClick={this.handleClick}>
-                                        Show More
-                                    </div>
-                                </Accordion.Toggle>
-
-                                <Accordion.Collapse eventKey="0">
-                                    <div>{Object.keys(this.state.restTransactionHistory).map((key, index) => (
-                                        <Row>
-                                            <Col xs={5}>
-                                                <p className='mobile-time'>{moment(key).format('YYYY-M-DD H:mm')}</p>
-                                            </Col>
-                                            <Col xs={5}>
-                                                {restTransactionHistory[key] > 0 &&
-                                                <p className='mobile-history'>+ {restTransactionHistory[key]}</p>
-                                                }
-                                                {restTransactionHistory[key] < 0 &&
-                                                <p className='mobile-negative'>- {Math.abs(restTransactionHistory[key])}</p>
-                                                }
-                                            </Col>
-                                        </Row>
-                                    ))}</div>
-                                </Accordion.Collapse>
-                            </Accordion>}
+                        <div className='mobile-center'>
+                            <TransactionHistory topFiveTransactionHistory = {this.state.topFiveTransactionHistory}
+                                                restTransactionHistory = {this.state.restTransactionHistory}/>
 
                         </div>
                         <div className='main-page-copyright'>
@@ -493,53 +396,22 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                             <Container className="my-auto">
                                 <div className='center'>
                                     <div>
-                                        <img className='image' src={logo} alt='logo'/>
-                                        <h1 className='title'>WALLETWATCH.XYZ</h1>
-                                        <div className='subtitle'>Tracking the Progress of Your Bitcoin Investment</div>
+                                        <HomePage/>
                                         <AddAddress addAddress={this.addAddress}/>
-
-                                        <div className='example'>
-                                            EXAMPLE ADDRESSES:
-                                        </div>
-                                        <div className='address'>
-                                            <a type='button' id='address1'
-                                               onClick={this.inputAddress}>3E1jAe14xLtRhJDmBgQCu98fiV7A3eq211</a>
-                                            <br/>
-                                            <a type='button' id='address2'
-                                               onClick={this.inputAddress2}>3JBqbYDLnQA7u2sNHraPL4yJSTjS3JUEa3</a>
-                                            <br/>
-                                            <a type='button' id='address3'
-                                               onClick={this.inputAddress3}>3KYwVvvvfNApEDjnVjgQU4swmSPhNKCzwD</a>
-                                        </div>
-                                        <div className='copy-right-center'>
-                                            <div className='copyright'>
-                                                <small>Made by <a className="copy-link" href="https://madeleinema.com/">Madeleine
-                                                    Ma</a> @Copyright 2021</small>
-                                            </div>
-                                        </div>
+                                        <Examples/>
                                     </div>
-
                                 </div>
                             </Container>
-
                         </div>
-
-
                     </React.Fragment>
                 )
             }
             if (this.state.isLoaded === 'spinner') {
                 return (
                     <div className='height'>
-
-                        <div className='loading-title'>Loading might take some time...</div>
-                        <br/>
-                        <div>
-                            <MeteorRainLoading size={'large'} color={'#18DCD6'}/>
-                        </div>
+                        <LoadingAnimation/>
                     </div>
                 )
-
             }
 
             return (
@@ -547,16 +419,11 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                     <div className='height'>
                         <Container>
                             <div className='center'>
-                                <img className='image2' onClick={this.refreshPage} src={logo} alt='logo'/>
-                                <div className='chart-title' type='button' onClick={this.refreshPage}>walletwatch.xyz
-                                </div>
+                                <MainPageHeader/>
                             </div>
-                            <br/>
                             <div className='address-part'>
-
                                 <div className='small-title'>Address: {this.state.address}</div>
                             </div>
-
                             <div className='addaddress'>
                                 <AddAddress addAddress={this.addAddress}/>
                             </div>
@@ -650,11 +517,9 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                                         />
                                         <ChartAxis dependentAxis crossAxis
                                                    tickFormat={(t) => `$${(t)}`}
-
                                                    style={{
                                                        axis: {
                                                            stroke: '#d1d9e0',
-
                                                        },
                                                        tickLabels: {
                                                            fill: '#d1d9e0',
@@ -664,7 +529,6 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                                                            stroke: ({tick}) => tick > 5000 ? "#adb5bd" : "#adb5bd",
                                                            opacity: 0.1
                                                        }
-
                                                    }}/>
                                         <ChartArea
                                             animate={{
@@ -693,8 +557,6 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                                 }
                                 >
                                     <ChartAxis
-
-
                                         style={{
                                             axis: {
                                                 stroke: '#d1d9e0'
@@ -704,7 +566,6 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                                                 fontFamily: 'Istok Web'
                                             }
                                         }}
-
                                     />
 
                                     <ChartLine
@@ -722,53 +583,23 @@ ${moment(datum.x).format('YYYY-M-DD H:mm')}`}
                                 </Chart>
                             </div>
                             <br/>
-                            <div className='main-chart'>
-                                <div className='balance'>TRANSACTION HISTORY</div>
-                                {Object.keys(this.state.topFiveTransactionHistory).map((key, index) => (
-                                    <Row>
-                                        <Col xs={5}>
-                                            <p className='time'>{moment(key).format('YYYY-M-DD H:mm')}</p>
-                                        </Col>
-                                        <Col xs={3}>
-                                            {topFiveTransactionHistory[key] > 0 &&
-                                            <p className='history'>+ {topFiveTransactionHistory[key]}</p>
-                                            }
-                                            {topFiveTransactionHistory[key] < 0 &&
-                                            <p className='negative'>- {Math.abs(topFiveTransactionHistory[key])}</p>
-                                            }
-                                        </Col>
-                                    </Row>
-                                ))}
-                                {Object.keys(restTransactionHistory).length >= 1 &&
-
-                                <Accordion>
-                                    <Accordion.Toggle as={NavLink} eventKey="0" hidden={this.state.hideDiv}>
-                                        <div className='toggle' onClick={this.handleClick}>
-                                            Show More
-                                        </div>
-                                    </Accordion.Toggle>
 
 
-                                    <Accordion.Collapse eventKey="0">
-                                        <div>{Object.keys(this.state.restTransactionHistory).map((key, index) => (
-                                            <Row>
-                                                <Col xs={5}>
-                                                    <p className='time'>{moment(key).format('YYYY-M-DD H:mm')}</p>
-                                                </Col>
-                                                <Col xs={3}>
-                                                    {restTransactionHistory[key] > 0 &&
-                                                    <p className='history'>+ {restTransactionHistory[key]}</p>
-                                                    }
-                                                    {restTransactionHistory[key] < 0 &&
-                                                    <p className='negative'>- {Math.abs(restTransactionHistory[key])}</p>
-                                                    }
-                                                </Col>
-                                            </Row>
-                                        ))}</div>
-                                    </Accordion.Collapse>
-                                </Accordion>}
 
-                            </div>
+
+                            <TransactionHistory topFiveTransactionHistory = {this.state.topFiveTransactionHistory}
+                                                restTransactionHistory = {this.state.restTransactionHistory}/>
+
+
+
+
+
+
+
+
+
+
+
                             <div className='main-page-copyright'>
                                 <small>Made by <a className="copy-link" href="https://madeleinema.com/">Madeleine
                                     Ma</a> @Copyright 2021</small>
