@@ -1,66 +1,33 @@
-import './App.css';
-import React, {Component} from 'react';
-import moment from "moment";
-import addresses from "./components/addresses";
-import AddAddress from "./components/AddAddress";
+<Row>
+                                    <Col>
+                                        <div>
+                                            <p className='balance'>CURRENT BALANCE</p><p className='small-tag'>USD</p>
+                                            <p className='currentBalance'> ${this.state.currentBalance.toFixed(2)}</p>
+                                        </div>
+                                        <div>
+                                            <p className='balance'>BTC BALANCE</p><p className='small-tag'>BTC</p>
+                                            <p className='data'>{this.state.btcBalance}</p>
+                                        </div>
+                                    </Col>
+                                    <Col style={{borderLeft: '2px solid grey', borderRight: '2px solid grey'}}>
+                                        <div>
+                                            <div className='balance'>PROFIT MARGIN</div>
+                                            <p className='data'>{this.state.profitMargin.toFixed(3)} %</p>
+                                        </div>
+                                        <div>
+                                            <p className='balance'>TOTAL INVESTED</p><p className='small-tag'>USD</p>
+                                            <p className='data'>${this.state.totalInvested}</p>
+                                        </div>
+                                    </Col>
+                                    <Col>
+                                        <div>
+                                            <p className='balance'>PROFIT</p><p className='small-tag'>USD</p>
+                                            <p className='data'>${this.state.profit.toFixed(2)}</p>
+                                        </div>
+                                        <div>
+                                            <p className='balance'>BTC PRICE</p><p className='small-tag'>USD</p>
+                                            <p className='data'>${this.state.currencyExchangeRate}</p>
+                                        </div>
+                                    </Col>
 
-
-class App extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            address: [],
-            isLoaded: false,
-            exchangeRate: null,
-        }
-        this.btcUsdApiBase = 'http://127.0.0.1:5000/api/btc?address='
-        this.test_results = {}
-
-    }
-
-    sendAddressToFlaskAPI(address) {
-        fetch(this.btcUsdApiBase + address)
-            .then(response => response.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        isLoaded: true,
-                        exchangeRate: result
-                        })
-                    console.log(this.state.exchangeRate)
-                }
-            )
-    }
-
-    addAddress = (address) => {
-        this.sendAddressToFlaskAPI(address)
-
-    }
-
-    render() {
-        const {isLoaded, exchangeRate} = this.state;
-
-        if (!isLoaded) {
-            return (
-                <React.Fragment>
-                    <AddAddress addAddress={this.addAddress}/>
-
-                </React.Fragment>)
-        }
-
-        return (
-            <React.Fragment>
-                <addresses addresses={this.state.addresses}/>
-                <div>
-                    test
-
-                </div>
-            </React.Fragment>
-        )
-    }
-
-
-}
-
-
-export default App;
+                                </Row>
