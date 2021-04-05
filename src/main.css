@@ -211,8 +211,7 @@
 .mobile-copyright {
     text-align: center;
     color: #D34C8E;
-    position: absolute;
-    bottom: 2%;
+
 }
 
 .mobile-height {
@@ -259,10 +258,6 @@
     margin-top: -15px;
 }
 
-.mobile-chart {
-    margin-bottom: 20px;
-}
-
 .mobile-small-tag {
     font-size: 5px;
     background-color: #f2ecde;
@@ -286,7 +281,7 @@
     width: 50%;
 }
 
-@media only screen and (min-width: 599px) {
+@media only screen and (min-width: 830px) {
     .form-submit {
         display: inline-block;
     }
@@ -347,7 +342,7 @@
 
 }
 
-@media only screen and (max-width: 599px) {
+@media only screen and (max-width: 829px) {
     .form-submit {
         display: inline-block;
     }
@@ -450,7 +445,6 @@
     .main-chart {
         padding: 10px;
         margin-bottom: 20px;
-
     }
 }
 
