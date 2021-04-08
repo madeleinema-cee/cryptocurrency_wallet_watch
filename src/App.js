@@ -79,7 +79,6 @@ class App extends Component {
     handelBalance(data) {
         if (data < 0) {
             data = 0
-            console.log(data)
             return data
         } else {
             return data
@@ -92,7 +91,6 @@ class App extends Component {
                 width: window.innerWidth
             }
         );
-        console.log(this.state.width)
     }
 
     formatData(inputData) {

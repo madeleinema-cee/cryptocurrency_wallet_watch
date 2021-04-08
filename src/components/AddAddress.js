@@ -18,7 +18,6 @@ export class AddAddress extends Component {
     }
 
     onSubmit = (event) => {
-        event.preventDefault();
         this.props.addAddress(this.state.address)
         this.setState({
             address: '',
