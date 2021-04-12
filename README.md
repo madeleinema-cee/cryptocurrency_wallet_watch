@@ -2,8 +2,7 @@
 
 This is a data visualization app made with Python framework Flask, SQLite database,
 React, HTML, and, CSS. 
-walletwatch.xyz (https://walletwatch.xyz/) is a database visualizing and displaying website made with Python backend and React frontend.
- The App is useful in tracking your bitcoin investment progress. Instead of calculating how much money gained
+walletwatch.xyz (https://walletwatch.xyz/) is useful in tracking your bitcoin investment progress. Instead of calculating how much money gained
   since yesterday, last week, and last month, the visualized data in the line chart will allow you to check
    your bitcoin balance for every hour. By calling a Flask API, the Python backend requests the bitcoin wallet
     data from Blockchain.com API with a designated wallet address.
