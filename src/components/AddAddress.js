@@ -18,6 +18,7 @@ export class AddAddress extends Component {
     }
 
     onSubmit = (event) => {
+        event.preventDefault();
         this.props.addAddress(this.state.address)
         this.setState({
             address: '',
@@ -31,7 +32,7 @@ export class AddAddress extends Component {
                 <div>
                     <form>
                         <input type='text' name='address' placeholder='Add blockchain.com wallet address'
-                               value={this.state.address} onChange={this.onChange}/>
+                               value={this.state.address} onChange={this.onChange} required/>
                         <div className='form-submit'>
                             <input type="submit" value="Submit"/>
                         </div>

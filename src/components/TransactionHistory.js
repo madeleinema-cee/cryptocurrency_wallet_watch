@@ -24,7 +24,7 @@ class TransactionHistory extends Component {
                 <div className='balance'>TRANSACTION HISTORY</div>
                 {Object.keys(this.props.topFiveTransactionHistory).map((key, index) => (
                     <Row>
-                        <Col xs={5}>
+                        <Col xs={6}>
                             <p className='time'>{moment(key).format('YYYY-M-DD H:mm')}</p>
                         </Col>
                         <Col xs={3}>
@@ -47,7 +47,7 @@ class TransactionHistory extends Component {
                     <Accordion.Collapse eventKey="0">
                         <div>{Object.keys(this.props.restTransactionHistory).map((key, index) => (
                             <Row>
-                                <Col xs={5}>
+                                <Col xs={6}>
                                     <p className='time'>{moment(key).format('YYYY-M-DD H:mm')}</p>
                                 </Col>
                                 <Col xs={3}>

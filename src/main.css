@@ -308,11 +308,6 @@
         cursor: pointer;
     }
 
-    input[type=submit]:hover {
-        opacity: 70%;
-
-    }
-
     .address-part {
         display: inline-block;
         padding-bottom: 10px;
@@ -448,7 +443,24 @@
     }
 }
 
+.error {
+    font-size: large;
+    color: var(--main-blue);
+}
 
+.go-back {
+    color: var(--main-red);
+    font-size: x-large;
+    font-weight: bold;
+    display: inline-block;
+}
 
+.icon {
+    color: var(--main-red);
+    font-size: x-large;
+    font-weight: bold;
+    display: inline-block;
+    margin-right: 10px;
+}
 
 
