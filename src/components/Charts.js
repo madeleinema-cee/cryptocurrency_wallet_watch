@@ -36,7 +36,7 @@ class Charts extends Component {
                                                            voronoiDimension="x"
                                                            labels={({datum}) => `$${datum.y}
                                                                  
-${moment(datum.x).format('YYYY-M-DD H:mm')}`}
+${moment(datum.x).format('YYYY-M-DD')}`}
                                                            labelComponent={
                                                                <VictoryTooltip
                                                                    cornerRadius={3}

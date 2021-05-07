@@ -33,6 +33,10 @@ export class AddAddress extends Component {
                     <form>
                         <input type='text' name='address' placeholder='Add blockchain.com wallet address'
                                value={this.state.address} onChange={this.onChange} required/>
+                               <select>
+                                <option value="BTH">BTH</option>
+                                <option value="ETH">ETH</option>
+                                </select>
                         <div className='form-submit'>
                             <input type="submit" value="Submit"/>
                         </div>
