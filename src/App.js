@@ -30,12 +30,13 @@ class App extends Component {
             btcBalance: null,
             profit: null,
             width: window.innerWidth,
+            currency: null
         }
 
-        this.btcUsdApiBase = 'https://api.walletwatch.xyz/api/btc?address=';
+        this.btcUsdApiBase = 'http://localhost:3000/api/';
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMoun() {
         window.addEventListener('resize', this.handleWindowSizeChange);
     }
 
@@ -48,11 +49,11 @@ class App extends Component {
     }
 
 
-    fetchBitcoinTransactionDataWithAPI(address) {
+    fetchBitcoinTransactionDataWithAPI(currency, address) {
         this.setState({
             isLoaded: 'spinner'
         })
-        fetch(this.btcUsdApiBase + address)
+        fetch(this.btcUsdApiBase + currency + '?address='+ address)
             .then(res => res.json())
             .then(
                 (result) => {
@@ -60,15 +61,17 @@ class App extends Component {
                         isLoaded: 'result',
                         datesWithBalance: this.formatData(result.balance),
                         address: address,
-                        currentBalance: this.handelBalance(result.btcbalance * result.btctousd),
-                        currencyExchangeRate: result.btctousd,
+                        currency: currency,
+                        currentBalance: this.handelBalance(result.final_balance * result.tousd),
+                        currencyExchangeRate: result.tousd,
                         topFiveTransactionHistory: this.getTopFiveTransactionHistory(result.transactionhistory).topFive,
                         restTransactionHistory: this.getTopFiveTransactionHistory(result.transactionhistory).rest,
-                        totalInvested: result.totalinvested.toFixed(2),
-                        btcBalance: this.handelBalance(result.btcbalance).toFixed(8),
-                        profit: result.totalprofit,
-                        profitMargin: result.profitmargin
+                        totalInvested: result.total_invested,
+                        btcBalance: this.handelBalance(result.final_balance),
+                        profit: result.total_profit,
+                        profitMargin: result.profit_margin
                     });
+                    console.log(this.state.currency)
                 },
 
                 // Note: it's important to handle errors here
@@ -107,26 +110,30 @@ class App extends Component {
             inputData[i]['x'] = new Date(inputData[i]['x'])
             inputData[i]['y'] = Math.round(inputData[i]['y'])
         }
+        console.log(inputData)
         return inputData
     }
 
     inputAddress = () => {
         let address = document.getElementById('address1').textContent
-        this.fetchBitcoinTransactionDataWithAPI(address)
+        let currency = 'btc'
+        this.fetchBitcoinTransactionDataWithAPI(currency, address)
     }
 
     inputAddress2 = () => {
         let address = document.getElementById('address2').textContent
-        this.fetchBitcoinTransactionDataWithAPI(address)
+        let currency = 'btc'
+        this.fetchBitcoinTransactionDataWithAPI(currency, address)
     }
 
     inputAddress3 = () => {
         let address = document.getElementById('address3').textContent
-        this.fetchBitcoinTransactionDataWithAPI(address)
+        let currency = 'btc'
+        this.fetchBitcoinTransactionDataWithAPI(currency, address)
     }
 
-    addAddress = (address) => {
-        this.fetchBitcoinTransactionDataWithAPI(address)
+    addAddress = (currency, address) => {
+        this.fetchBitcoinTransactionDataWithAPI(currency, address)
     }
 
     getTopFiveTransactionHistory(inputData) {
@@ -231,7 +238,7 @@ class App extends Component {
                                                 <p className='mobile-balance'>BALANCE</p><p
                                                 className='mobile-small-tag'>USD</p>
                                                 <p className='mobile-currentBalance'>
-                                                    ${this.state.currentBalance.toFixed(2)}
+                                                    ${this.state.currentBalance}
                                                 </p>
                                             </div>
                                         </Col>
@@ -250,14 +257,14 @@ class App extends Component {
                                             <div>
                                                 <p className='mobile-balance'>PROFIT MARGIN</p><p
                                                 className='mobile-small-tag'></p>
-                                                <p className='mobile-data'>{this.state.profitMargin.toFixed(3)} %</p>
+                                                <p className='mobile-data'>{this.state.profitMargin} %</p>
                                             </div>
                                         </Col>
                                         <Col>
                                             <div>
                                                 <p className='mobile-balance'>PROFIT</p><p
                                                 className='mobile-small-tag'>USD</p>
-                                                <p className='mobile-data'>${this.state.profit.toFixed(2)}</p>
+                                                <p className='mobile-data'>${this.state.profit}</p>
                                             </div>
                                         </Col>
                                     </Row>
@@ -363,7 +370,7 @@ class App extends Component {
                                             <div>
                                                 <p className='balance'>CURRENT BALANCE</p><p
                                                 className='small-tag'>USD</p>
-                                                <p className='currentBalance'> ${this.state.currentBalance.toFixed(2)}</p>
+                                                <p className='currentBalance'> ${this.state.currentBalance}</p>
                                             </div>
                                             <div>
                                                 <p className='balance'>BTC BALANCE</p><p
@@ -374,7 +381,7 @@ class App extends Component {
                                         <Col style={{borderLeft: '2px solid grey', borderRight: '2px solid grey'}}>
                                             <div>
                                                 <div className='balance'>PROFIT MARGIN</div>
-                                                <p className='data'>{this.state.profitMargin.toFixed(3)} %</p>
+                                                <p className='data'>{this.state.profitMargin} %</p>
                                             </div>
                                             <div>
                                                 <p className='balance'>TOTAL INVESTED</p><p
@@ -385,7 +392,7 @@ class App extends Component {
                                         <Col>
                                             <div>
                                                 <p className='balance'>PROFIT</p><p className='small-tag'>USD</p>
-                                                <p className='data'>${this.state.profit.toFixed(2)}</p>
+                                                <p className='data'>${this.state.profit}</p>
                                             </div>
                                             <div>
                                                 <p className='balance'>BTC PRICE</p><p className='small-tag'>USD</p>
