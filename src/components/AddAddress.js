@@ -10,17 +10,24 @@ export class AddAddress extends Component {
             error: null,
             address: '',
             currency: 'btc',
-            mycar: 'volvo'
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.handleChange = this.handleChange.bind(this)
     }
 
-    onChange(val){
+    onChange(event) {
         this.setState({
-            address: val.address,
-            currency: val.currency
+            'address': event.target.value,
         })
+    }
+
+    handleChange(val) {
+        this.setState({
+            'currency': val.value,
+        })
+        console.log(val)
+
     }
 
     onSubmit = (event) => {
@@ -31,24 +38,24 @@ export class AddAddress extends Component {
             currency: '',
             isLoaded: true
         })
-        console.log(this.state.address)
     }
 
     render() {
-      const options = [
-       {value: 'one', label: 'One' },
-       {value: 'two', label: 'Two' }
-    ];
+        const options = [
+            {value: 'btc', label: 'BTC'},
+            {value: 'eth', label: 'ETH'}
+        ];
         return (
             <div onSubmit={this.onSubmit}>
                 <div>
                     <form>
                         <input type='text' name='address' placeholder='Add blockchain.com wallet address'
                                value={this.state.address} onChange={this.onChange} required/>
-                               <Select
-                                 value = {this.state.currency}
-                               onchange = {this.onChange}
-                               options={options}/>
+                        <Select
+                            defaultValue={options[0]}
+                            value={this.state.value}
+                            onChange={this.handleChange}
+                            options={options} />
                         <div className='form-submit'>
                             <input type="submit" value="Submit"/>
                         </div>
@@ -59,11 +66,11 @@ export class AddAddress extends Component {
 
         )
     }
-}
 
 // constructor(){
 //      super();
 //      this.state = {value: ''}
+//     this.logChange=this.logChange.bind(this)
 //   }
 //
 //   logChange(val) {
@@ -82,11 +89,13 @@ export class AddAddress extends Component {
 //           name="form-field-name"
 //           value={this.state.value}
 //           options={options}
-//           onChange={this.logChange.bind(this)}
+//           onChange = {this.logChange}
+//
 //       />
 //
 //     )
 //   }
-// }
+
+}
 
 export default AddAddress

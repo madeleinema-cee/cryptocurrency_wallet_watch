@@ -27,7 +27,7 @@ class App extends Component {
             topFiveTransactionHistory: null,
             profitMargin: null,
             totalInvested: null,
-            btcBalance: null,
+            Balance: null,
             profit: null,
             width: window.innerWidth,
             currency: null
@@ -61,13 +61,13 @@ class App extends Component {
                         isLoaded: 'result',
                         datesWithBalance: this.formatData(result.balance),
                         address: address,
-                        currency: currency,
+                        currency: currency.toUpperCase(),
                         currentBalance: this.handelBalance(result.final_balance * result.tousd),
                         currencyExchangeRate: result.tousd,
                         topFiveTransactionHistory: this.getTopFiveTransactionHistory(result.transactionhistory).topFive,
                         restTransactionHistory: this.getTopFiveTransactionHistory(result.transactionhistory).rest,
                         totalInvested: result.total_invested,
-                        btcBalance: this.handelBalance(result.final_balance),
+                        Balance: this.handelBalance(result.final_balance),
                         profit: result.total_profit,
                         profitMargin: result.profit_margin
                     });
@@ -244,9 +244,9 @@ class App extends Component {
                                         </Col>
                                         <Col>
                                             <div>
-                                                <p className='mobile-balance'>BTC BALANCE</p><p
-                                                className='mobile-small-tag'>BTC</p>
-                                                <p className='mobile-data'>{this.state.btcBalance}</p>
+                                                <p className='mobile-balance'>{this.state.currency} BALANCE</p><p
+                                                className='mobile-small-tag'>{this.state.currency}</p>
+                                                <p className='mobile-data'>{this.state.Balance}</p>
                                             </div>
                                         </Col>
                                     </Row>
@@ -280,7 +280,7 @@ class App extends Component {
                                         </Col>
                                         <Col>
                                             <div>
-                                                <p className='mobile-balance'>BTC PRICE</p><p
+                                                <p className='mobile-balance'>{this.state.currency} PRICE</p><p
                                                 className='mobile-small-tag'>USD</p>
                                                 <p className='mobile-data'>${this.state.currencyExchangeRate}</p>
                                             </div>
@@ -373,9 +373,9 @@ class App extends Component {
                                                 <p className='currentBalance'> ${this.state.currentBalance}</p>
                                             </div>
                                             <div>
-                                                <p className='balance'>BTC BALANCE</p><p
-                                                className='small-tag'>BTC</p>
-                                                <p className='data'>{this.state.btcBalance}</p>
+                                                <p className='balance'>{this.state.currency} BALANCE</p><p
+                                                className='small-tag'>{this.state.currency}</p>
+                                                <p className='data'>{this.state.Balance}</p>
                                             </div>
                                         </Col>
                                         <Col style={{borderLeft: '2px solid grey', borderRight: '2px solid grey'}}>
@@ -395,7 +395,7 @@ class App extends Component {
                                                 <p className='data'>${this.state.profit}</p>
                                             </div>
                                             <div>
-                                                <p className='balance'>BTC PRICE</p><p className='small-tag'>USD</p>
+                                                <p className='balance'>{this.state.currency} PRICE</p><p className='small-tag'>USD</p>
                                                 <p className='data'>${this.state.currencyExchangeRate}</p>
                                             </div>
                                         </Col>
