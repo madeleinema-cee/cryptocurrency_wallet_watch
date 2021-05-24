@@ -6,7 +6,7 @@ function HomePage(props) {
         <div>
             <img className='image' src={logo} alt='logo'/>
             <h1 className='title'>WALLETWATCH.XYZ</h1>
-            <div className='subtitle'>Tracking the Progress of Your Bitcoin
+            <div className='subtitle'>Tracking the Progress of Your Cryptocurrency
                 Investment
             </div>
         </div>

@@ -1,25 +1,21 @@
 import './App.css';
-import React, {Component, useEffect, useState} from 'react';
-import { ArrowRight } from 'react-bootstrap-icons';
-import { FaArrowCircleLeft } from 'react-icons/fa';
-import { BsFillAlarmFill } from "react-icons/bs";
-import AddAddress from "./components/AddAddress";
-import HomePage from "./components/HomePage";
+import React, {Component} from 'react';
+import {FaArrowCircleLeft} from 'react-icons/fa';
 import LoadingAnimation from "./components/LoadingAnimation";
 import MainPageHeader from "./components/MainPageHeader";
-import Examples from "./components/Examples";
 import Charts from "./components/Charts";
 import TransactionHistory from "./components/TransactionHistory";
-import ErrorAlert from "./components/ErrorAlert";
 import {Col, Container, Row} from 'react-bootstrap';
 import './main.css';
+
 
 class App extends Component {
     constructor(props) {
         super(props);
+        const query = new URLSearchParams(this.props.location.search)
         this.state = {
             isLoaded: 'form',
-            addresses: [],
+            address: query.get('address'),
             error: null,
             datesWithBalances: [],
             currentBalance: null,
@@ -30,13 +26,19 @@ class App extends Component {
             Balance: null,
             profit: null,
             width: window.innerWidth,
-            currency: null
+            currency: query.get('currency'),
         }
 
-        this.btcUsdApiBase = 'http://localhost:3000/api/';
+        this.btcUsdApiBase = 'http://127.0.0.1:5000/api/';
+        if (this.state.currency !== null) {
+            this.fetchBitcoinTransactionDataWithAPI(this.state.currency, this.state.address)
+            console.log('test')
+        }
+        console.log(this.state.address)
+        console.log(this.state.currency)
     }
 
-    UNSAFE_componentWillMoun() {
+    componentDidMount() {
         window.addEventListener('resize', this.handleWindowSizeChange);
     }
 
@@ -48,30 +50,27 @@ class App extends Component {
         window.location.reload(false)
     }
 
-
     fetchBitcoinTransactionDataWithAPI(currency, address) {
-        this.setState({
-            isLoaded: 'spinner'
-        })
-        fetch(this.btcUsdApiBase + currency + '?address='+ address)
+        fetch(this.btcUsdApiBase + currency + '?address=' + address)
             .then(res => res.json())
             .then(
                 (result) => {
+                    console.log(result)
                     this.setState({
                         isLoaded: 'result',
                         datesWithBalance: this.formatData(result.balance),
                         address: address,
                         currency: currency.toUpperCase(),
-                        currentBalance: this.handelBalance(result.final_balance * result.tousd),
+                        currentBalance: this.handleBalance(result.final_balance * result.tousd).toFixed(2),
                         currencyExchangeRate: result.tousd,
                         topFiveTransactionHistory: this.getTopFiveTransactionHistory(result.transactionhistory).topFive,
                         restTransactionHistory: this.getTopFiveTransactionHistory(result.transactionhistory).rest,
-                        totalInvested: result.total_invested,
-                        Balance: this.handelBalance(result.final_balance),
-                        profit: result.total_profit,
-                        profitMargin: result.profit_margin
+                        totalInvested: result.total_invested.toFixed(2),
+                        Balance: this.handelBalance(result.final_balance).toFixed(6),
+                        profit: result.total_profit.toFixed(2),
+                        profitMargin: result.profit_margin.toFixed(2)
                     });
-                    console.log(this.state.currency)
+                    console.log(this.state.currentBalance)
                 },
 
                 // Note: it's important to handle errors here
@@ -83,12 +82,11 @@ class App extends Component {
                         address: address,
                         error
                     });
-                    console.log(this.state.error)
                 }
             )
     }
 
-    handelBalance(data) {
+    handleBalance(data) {
         if (data < 0) {
             data = 0
             return data
@@ -110,31 +108,12 @@ class App extends Component {
             inputData[i]['x'] = new Date(inputData[i]['x'])
             inputData[i]['y'] = Math.round(inputData[i]['y'])
         }
-        console.log(inputData)
         return inputData
     }
 
-    inputAddress = () => {
-        let address = document.getElementById('address1').textContent
-        let currency = 'btc'
-        this.fetchBitcoinTransactionDataWithAPI(currency, address)
-    }
-
-    inputAddress2 = () => {
-        let address = document.getElementById('address2').textContent
-        let currency = 'btc'
-        this.fetchBitcoinTransactionDataWithAPI(currency, address)
-    }
-
-    inputAddress3 = () => {
-        let address = document.getElementById('address3').textContent
-        let currency = 'btc'
-        this.fetchBitcoinTransactionDataWithAPI(currency, address)
-    }
-
-    addAddress = (currency, address) => {
-        this.fetchBitcoinTransactionDataWithAPI(currency, address)
-    }
+    // addAddress = (currency, address) => {
+    //     this.fetchBitcoinTransactionDataWithAPI(currency, address)
+    // }
 
     getTopFiveTransactionHistory(inputData) {
         let transactionHistory = {}
@@ -165,9 +144,12 @@ class App extends Component {
                     <div className='mobile-background'>
                         <Container className="my-auto">
                             <div className='mobile-center'>
-                                <div className='error'>╮(╯﹏╰)╭ No information for this address. Please specify a valid address.</div>
+                                <div className='error'>╮(╯﹏╰)╭ No information for this address. Please specify a valid
+                                    address.
+                                </div>
                                 <br/>
-                                <div type='button' onClick={this.refreshPage} className='icon'><FaArrowCircleLeft /></div>
+                                <div type='button' onClick={this.refreshPage} className='icon'><FaArrowCircleLeft/>
+                                </div>
                                 <div type='button' className='go-back' onClick={this.refreshPage}>Go Back</div>
                             </div>
                         </Container>
@@ -180,42 +162,6 @@ class App extends Component {
             if (isMobile) {
                 if (this.state.isLoaded === 'form') {
                     return (
-                        <React.Fragment>
-                            <div className='mobile-background'>
-                                <Container className="my-auto">
-                                    <div className='mobile-center'>
-                                        <HomePage/>
-                                        <AddAddress addAddress={this.addAddress}/>
-                                        <div>
-                                            <div className='example'>
-                                                EXAMPLE ADDRESSES:
-                                            </div>
-                                            <div className='address'>
-                                                <a type='button' id='address1' onClick={this.inputAddress}
-                                                >3E1jAe14xLtRhJDmBgQCu98fiV7A3eq211</a>
-                                                <br/>
-                                                <a type='button' id='address2' onClick={this.inputAddress2}
-                                                >3JBqbYDLnQA7u2sNHraPL4yJSTjS3JUEa3</a>
-                                                <br/>
-                                                <a type='button' id='address3' onClick={this.inputAddress3}
-                                                >3KYwVvvvfNApEDjnVjgQU4swmSPhNKCzwD</a>
-                                            </div>
-                                            <div className='copy-right-center'>
-                                                <div className='copyright'>
-                                                    <small>Made by <a className="copy-link"
-                                                                      href="https://madeleinema.com/">Madeleine
-                                                        Ma</a> @Copyright 2021</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Container>
-                            </div>
-                        </React.Fragment>
-                    )
-                }
-                if (this.state.isLoaded === 'spinner') {
-                    return (
                         <LoadingAnimation/>
                     )
                 }
@@ -225,9 +171,6 @@ class App extends Component {
                             <div className='mobile-center'>
                                 <MainPageHeader/>
                                 <div className='small-title2'>Address: {this.state.address}</div>
-                                <div className='search-bar'>
-                                    <AddAddress addAddress={this.addAddress}/>
-                                </div>
                             </div>
 
                             <div className='mobile-main-chart'>
@@ -288,9 +231,7 @@ class App extends Component {
                                     </Row>
                                 </div>
                             </div>
-
                             <Charts datesWithBalance={this.state.datesWithBalance}/>
-
                             <div className='mobile-center'>
                                 <TransactionHistory topFiveTransactionHistory={this.state.topFiveTransactionHistory}
                                                     restTransactionHistory={this.state.restTransactionHistory}/>
@@ -300,56 +241,16 @@ class App extends Component {
                                     Ma</a> @Copyright 2021</small>
                             </div>
                         </div>
-
                     </React.Fragment>
                 )
             } else {
                 if (this.state.isLoaded === 'form') {
-                    return (
-                        <React.Fragment>
-                            <div className='background'>
-                                <Container className="my-auto">
-                                    <div className='center'>
-                                        <div>
-                                            <HomePage/>
-                                            <AddAddress addAddress={this.addAddress}/>
-                                            <div>
-                                                <div className='example'>
-                                                    EXAMPLE ADDRESSES:
-                                                </div>
-                                                <div className='address'>
-                                                    <a type='button' id='address1' onClick={this.inputAddress}
-                                                    >3E1jAe14xLtRhJDmBgQCu98fiV7A3eq211</a>
-                                                    <br/>
-                                                    <a type='button' id='address2' onClick={this.inputAddress2}
-                                                    >3JBqbYDLnQA7u2sNHraPL4yJSTjS3JUEa3</a>
-                                                    <br/>
-                                                    <a type='button' id='address3' onClick={this.inputAddress3}
-                                                    >3KYwVvvvfNApEDjnVjgQU4swmSPhNKCzwD</a>
-                                                </div>
-                                                <div className='copy-right-center'>
-                                                    <div className='copyright'>
-                                                        <small>Made by <a className="copy-link"
-                                                                          href="https://madeleinema.com/">Madeleine
-                                                            Ma</a> @Copyright 2021</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Container>
-                            </div>
-                        </React.Fragment>
-                    )
-                }
-                if (this.state.isLoaded === 'spinner') {
                     return (
                         <div className='height'>
                             <LoadingAnimation/>
                         </div>
                     )
                 }
-
                 return (
                     <React.Fragment>
                         <div className='height'>
@@ -359,9 +260,6 @@ class App extends Component {
                                 </div>
                                 <div className='address-part'>
                                     <div className='small-title'>Address: {this.state.address}</div>
-                                </div>
-                                <div className='addaddress'>
-                                    <AddAddress addAddress={this.addAddress}/>
                                 </div>
 
                                 <div className='main-chart'>
@@ -395,7 +293,8 @@ class App extends Component {
                                                 <p className='data'>${this.state.profit}</p>
                                             </div>
                                             <div>
-                                                <p className='balance'>{this.state.currency} PRICE</p><p className='small-tag'>USD</p>
+                                                <p className='balance'>{this.state.currency} PRICE</p><p
+                                                className='small-tag'>USD</p>
                                                 <p className='data'>${this.state.currencyExchangeRate}</p>
                                             </div>
                                         </Col>
@@ -422,6 +321,5 @@ class App extends Component {
         }
     }
 }
-
 
 export default App

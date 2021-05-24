@@ -1,33 +1,35 @@
 import React, {Component} from 'react';
 import './mainForm.css';
-import Select from "react-select";
+import HomePage from "./HomePage";
+import {Container} from 'react-bootstrap';
+
 
 export class AddAddress extends Component {
     constructor(props) {
         super(props);
+        // const query = new URLSearchParams(this.props.location.search)
         this.state = {
             isLoaded: false,
             error: null,
             address: '',
             currency: 'btc',
+            redirect: false
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
-        this.handleChange = this.handleChange.bind(this)
+        this.handleChange = this.handleChange.bind(this);
     }
 
-    onChange(event) {
+    onChange(val) {
         this.setState({
-            'address': event.target.value,
+            'address': val.target.value,
         })
     }
 
     handleChange(val) {
         this.setState({
-            'currency': val.value,
+            'currency': val.target.value,
         })
-        console.log(val)
-
     }
 
     onSubmit = (event) => {
@@ -40,62 +42,89 @@ export class AddAddress extends Component {
         })
     }
 
+    changeUrl = () => {
+        this.props.history.push(`/address?address=${this.state.address}&currency=${this.state.currency}`)
+    }
+
+    inputAddress = () => {
+        let address = document.getElementById('address1').textContent
+        let currency = 'btc'
+        this.props.history.push(`/address?address=${address}&currency=${currency}`)
+    }
+
+    inputAddress2 = () => {
+        let address = document.getElementById('address2').textContent
+        let currency = 'btc'
+        this.props.history.push(`/address?address=${address}&currency=${currency}`)
+    }
+
+    inputAddress3 = () => {
+        let address = document.getElementById('address3').textContent
+        let currency = 'btc'
+        this.props.history.push(`/address?address=${address}&currency=${currency}`)
+    }
+
+
     render() {
         const options = [
             {value: 'btc', label: 'BTC'},
             {value: 'eth', label: 'ETH'}
         ];
         return (
-            <div onSubmit={this.onSubmit}>
-                <div>
-                    <form>
-                        <input type='text' name='address' placeholder='Add blockchain.com wallet address'
-                               value={this.state.address} onChange={this.onChange} required/>
-                        <Select
-                            defaultValue={options[0]}
-                            value={this.state.value}
-                            onChange={this.handleChange}
-                            options={options} />
-                        <div className='form-submit'>
-                            <input type="submit" value="Submit"/>
+            <React.Fragment>
+                <div className='background'>
+                    <Container className="my-auto">
+                        <div className='center'>
+                            <div>
+                                <HomePage/>
+                                <div onSubmit={this.onSubmit}>
+
+                                    <div>
+                                        <form>
+                                            <input type='text' name='address' placeholder='Add wallet address'
+                                                   value={this.state.address} onChange={this.onChange} required/>
+                                            <select className='selectForm'
+                                                    value={this.state.currency}
+                                                    onChange={this.handleChange}>
+                                                <option value='btc'>BTC</option>
+                                                <option value='eth'>ETH</option>
+                                            </select>
+                                            <div className='form-submit' onClick={this.changeUrl}>
+                                                <input type="submit" value="Submit"/>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className='example'>
+                                        EXAMPLE ADDRESSES:
+                                    </div>
+                                    <div className='address'>
+                                        <a type='button' id='address1' onClick={this.inputAddress}
+                                        >3E1jAe14xLtRhJDmBgQCu98fiV7A3eq211</a>
+                                        <br/>
+                                        <a type='button' id='address2' onClick={this.inputAddress2}
+                                        >3JBqbYDLnQA7u2sNHraPL4yJSTjS3JUEa3</a>
+                                        <br/>
+                                        <a type='button' id='address3' onClick={this.inputAddress3}
+                                        >3KYwVvvvfNApEDjnVjgQU4swmSPhNKCzwD</a>
+                                    </div>
+                                    <div className='copy-right-center'>
+                                        <div className='copyright'>
+                                            <small>Made by <a className="copy-link"
+                                                              href="https://madeleinema.com/">Madeleine
+                                                Ma</a> @Copyright 2021</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </form>
+                    </Container>
                 </div>
-
-            </div>
-
+            </React.Fragment>
         )
     }
-
-// constructor(){
-//      super();
-//      this.state = {value: ''}
-//     this.logChange=this.logChange.bind(this)
-//   }
-//
-//   logChange(val) {
-//     console.log("Selected: " + val.value);
-//     this.setState({value: val.value});
-//   }
-//
-//   render(){
-//     var options = [
-//        {value: 'one', label: 'One' },
-//        {value: 'two', label: 'Two' }
-//     ];
-//     return(
-//
-//       <Select
-//           name="form-field-name"
-//           value={this.state.value}
-//           options={options}
-//           onChange = {this.logChange}
-//
-//       />
-//
-//     )
-//   }
-
 }
 
 export default AddAddress
+
