@@ -7,6 +7,7 @@ import Charts from "./components/Charts";
 import TransactionHistory from "./components/TransactionHistory";
 import {Col, Container, Row} from 'react-bootstrap';
 import './main.css';
+import {Link} from "react-router-dom";
 
 
 class App extends Component {
@@ -29,13 +30,10 @@ class App extends Component {
             currency: query.get('currency'),
         }
 
-        this.btcUsdApiBase = 'http://127.0.0.1:5000/api/';
+        this.btcUsdApiBase = 'https://api.walletwatch.xyz/api/';
         if (this.state.currency !== null) {
             this.fetchBitcoinTransactionDataWithAPI(this.state.currency, this.state.address)
-            console.log('test')
         }
-        console.log(this.state.address)
-        console.log(this.state.currency)
     }
 
     componentDidMount() {
@@ -55,7 +53,6 @@ class App extends Component {
             .then(res => res.json())
             .then(
                 (result) => {
-                    console.log(result)
                     this.setState({
                         isLoaded: 'result',
                         datesWithBalance: this.formatData(result.balance),
@@ -66,11 +63,10 @@ class App extends Component {
                         topFiveTransactionHistory: this.getTopFiveTransactionHistory(result.transactionhistory).topFive,
                         restTransactionHistory: this.getTopFiveTransactionHistory(result.transactionhistory).rest,
                         totalInvested: result.total_invested.toFixed(2),
-                        Balance: this.handelBalance(result.final_balance).toFixed(6),
+                        Balance: this.handleBalance(result.final_balance).toFixed(6),
                         profit: result.total_profit.toFixed(2),
                         profitMargin: result.profit_margin.toFixed(2)
                     });
-                    console.log(this.state.currentBalance)
                 },
 
                 // Note: it's important to handle errors here
@@ -111,10 +107,6 @@ class App extends Component {
         return inputData
     }
 
-    // addAddress = (currency, address) => {
-    //     this.fetchBitcoinTransactionDataWithAPI(currency, address)
-    // }
-
     getTopFiveTransactionHistory(inputData) {
         let transactionHistory = {}
         let topFiveTransactionHistory = {}
@@ -148,17 +140,23 @@ class App extends Component {
                                     address.
                                 </div>
                                 <br/>
-                                <div type='button' onClick={this.refreshPage} className='icon'><FaArrowCircleLeft/>
-                                </div>
-                                <div type='button' className='go-back' onClick={this.refreshPage}>Go Back</div>
+                                <Link to={{
+                                    pathname: `/`,
+                                    state: {
+                                        address: '',
+                                        currency: ''
+                                    }
+                                }}>
+                                    <div type='button' className='icon'><FaArrowCircleLeft/>
+                                    </div>
+                                    <div type='button' className='go-back'>Go Back</div>
+                                </Link>
                             </div>
                         </Container>
                     </div>
                 </React.Fragment>
             )
         } else {
-
-
             if (isMobile) {
                 if (this.state.isLoaded === 'form') {
                     return (

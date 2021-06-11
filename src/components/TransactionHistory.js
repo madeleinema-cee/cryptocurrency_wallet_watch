@@ -29,10 +29,10 @@ class TransactionHistory extends Component {
                         </Col>
                         <Col xs={3}>
                             {this.props.topFiveTransactionHistory[key] > 0 &&
-                            <p className='history'>+ {this.props.topFiveTransactionHistory[key]}</p>
+                            <p className='history'>+ {Math.abs(this.props.topFiveTransactionHistory[key]).toFixed(8)}</p>
                             }
                             {this.props.topFiveTransactionHistory[key] < 0 &&
-                            <p className='negative'>- {Math.abs(this.props.topFiveTransactionHistory[key])}</p>
+                            <p className='negative'>- {Math.abs(this.props.topFiveTransactionHistory[key]).toFixed(8)}</p>
                             }
                         </Col>
                     </Row>
@@ -52,10 +52,10 @@ class TransactionHistory extends Component {
                                 </Col>
                                 <Col xs={3}>
                                     {this.props.restTransactionHistory[key] > 0 &&
-                                    <p className='history'>+ {this.props.restTransactionHistory[key]}</p>
+                                    <p className='history'>+ {Math.abs(this.props.restTransactionHistory[key]).toFixed(8)}</p>
                                     }
                                     {this.props.restTransactionHistory[key] < 0 &&
-                                    <p className='negative'>- {Math.abs(this.props.restTransactionHistory[key])}</p>
+                                    <p className='negative'>- {Math.abs(this.props.restTransactionHistory[key]).toFixed(8)}</p>
                                     }
                                 </Col>
                             </Row>

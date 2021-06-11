@@ -60,7 +60,7 @@ export class AddAddress extends Component {
 
     inputAddress3 = () => {
         let address = document.getElementById('address3').textContent
-        let currency = 'btc'
+        let currency = 'eth'
         this.props.history.push(`/address?address=${address}&currency=${currency}`)
     }
 
@@ -107,15 +107,13 @@ export class AddAddress extends Component {
                                         >3JBqbYDLnQA7u2sNHraPL4yJSTjS3JUEa3</a>
                                         <br/>
                                         <a type='button' id='address3' onClick={this.inputAddress3}
-                                        >3KYwVvvvfNApEDjnVjgQU4swmSPhNKCzwD</a>
+                                        >0x302d29399e287EFd15e37850909a8F5F4762B304</a>
                                     </div>
-                                    <div className='copy-right-center'>
-                                        <div className='copyright'>
+                                        <div className='main-page-copyright'>
                                             <small>Made by <a className="copy-link"
                                                               href="https://madeleinema.com/">Madeleine
                                                 Ma</a> @Copyright 2021</small>
                                         </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
